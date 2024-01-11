@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../linqbin-backend"
+		}
+	],
+  "settings": {
+    "prettier.documentSelectors": [
+      "**/*.svelte"
+    ]
+  }
+}
