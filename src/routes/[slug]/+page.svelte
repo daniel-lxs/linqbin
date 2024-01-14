@@ -1,11 +1,14 @@
 <script lang="ts">
-	import { popup } from '@skeletonlabs/skeleton';
-	import { validateUrl } from '../../../utils/validateUrl';
-	import { Check, Copy, Frown } from 'lucide-svelte';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
-	import type { Entry } from '../../../types/Entry';
-	import Card from '../../../components/Card.svelte';
+	import { popup } from '@skeletonlabs/skeleton';
+	import { Check, Copy, Frown } from 'lucide-svelte';
+	import * as yup from 'yup';
+	import Card from '../../components/Card.svelte';
+	import SmallCard from '../../components/SmallCard.svelte';
+	import { decryptContent } from '../../utils/decryptContent';
+	import { validateUrl } from '../../utils/validateUrl';
 	import type { PageData } from './$types';
+	import type { Entry } from '../../types/Entry';
 
 	export let data: PageData;
 
@@ -16,6 +19,7 @@
 	let countdown: number;
 	let countdownNumber: number = 3;
 	let redirectMessage = 'Redirecting...';
+	let decryptedContent: string | null = null;
 
 	// Popup settings for copy functionality
 	const popupCopied: PopupSettings = {
@@ -27,22 +31,39 @@
 	// Icon size
 	const iconSize = '2.5rem';
 
-	const fetchEntry = async () => {
+	async function processEntry(entry: Entry | undefined, passkey: string | undefined) {
 		try {
-			if (data.entry && data.status === 200) {
-				const isURLValid = await validateUrl(data.entry.content);
-				if (isURLValid) {
-					shouldRedirect = true;
-					startCountdown();
+			if (!data.slug) {
+				window.location.href = '/';
+			}
+
+			if (entry && passkey) {
+				decryptedContent = await decryptContent(entry.content, passkey);
+
+				if (decryptedContent) {
+					const isURLValid = await validateUrl(decryptedContent);
+					if (isURLValid) {
+						shouldRedirect = true;
+						startCountdown();
+					}
 				}
 			}
 			isFetchingEntry = false;
 		} catch (error) {
 			isFetchingEntry = false;
 		}
-	};
+	}
 
-	$: fetchEntry();
+	let passkeyError = '';
+	let enteredPasskey = '';
+
+	async function handleUnlock() {
+		if (yup.string().length(6).required().isValidSync(enteredPasskey)) {
+			window.location.href = `/${data.slug}-${enteredPasskey}`;
+		} else {
+			passkeyError = 'Invalid passkey';
+		}
+	}
 
 	// Copy click handler
 	function handleCopyClick() {
@@ -61,10 +82,12 @@
 				countdownNumber--;
 			} else {
 				window.clearInterval(countdown);
-				window.location.href = (data.entry as Entry).content;
+				window.location.href = decryptedContent as string;
 			}
 		}, 1000);
 	}
+
+	$: processEntry(data.entry, data.passkey);
 </script>
 
 <div class="flex items-center justify-center h-full">
@@ -77,7 +100,42 @@
 				</div>
 			</section>
 		</Card>
-	{:else if data.entry}
+	{:else if !data.passkey}
+		<SmallCard>
+			<div class="flex items-center justify-center w-full">
+				<header class="card-header flex items-center">
+					<h2 class="text-center h2 ml-2">Passkey was not provided</h2>
+				</header>
+			</div>
+			<section class="p-4 mt-4">
+				<form class="flex items-center justify-center" on:submit|preventDefault={handleUnlock}>
+					<input
+						class="input variant-form-material"
+						type="text"
+						name="passkey"
+						id="passkey"
+						spellcheck="false"
+						required
+						bind:value={enteredPasskey}
+						on:input={() => (passkeyError = '')}
+						placeholder="To access the link, please enter the provided passkey"
+					/>
+					<button class="btn variant-filled-primary ml-2" type="submit">Unlock</button>
+				</form>
+
+				{#if passkeyError !== ''}
+					<div class="text-error-500">{passkeyError}</div>
+				{/if}
+
+				<p class="text-sm text-center mt-4">
+					If you've landed on this page by accident, request the passkey from the link creator.
+				</p>
+				<div class="flex items-center justify-center w-full">
+					<a href="/" class="btn variant-filled-primary mt-8">Create new link</a>
+				</div>
+			</section>
+		</SmallCard>
+	{:else if data.entry && decryptedContent}
 		<Card>
 			<header class="card-header">
 				{#if shouldRedirect}
@@ -91,7 +149,7 @@
 			<section class="p-4">
 				<div class="card variant-soft p-4 flex items-start">
 					<section class="p-1 min-h-0">
-						{data.entry.content}
+						{decryptedContent}
 					</section>
 					{#if !shouldRedirect}
 						<aside class="card p-4 variant-filled-primary" data-popup="popupCopied">
@@ -115,7 +173,7 @@
 			</section>
 		</Card>
 	{:else}
-		<div class="card variant-ghost p-6 mb-8 shadow-xl">
+		<SmallCard>
 			<div class="flex items-center justify-center w-full">
 				<header class="card-header flex items-center">
 					<Frown size={iconSize} />
@@ -123,11 +181,13 @@
 				</header>
 			</div>
 			<section class="p-4 mt-4">
-				<p class="text-lg text-center">The requested link could not be found or has expired</p>
+				<p class="text-lg text-center">
+					The requested link could not be found, has expired or has an invalid passkey
+				</p>
 				<div class="flex items-center justify-center w-full">
 					<a href="/" class="btn variant-filled-primary mt-8">Create new link</a>
 				</div>
 			</section>
-		</div>
+		</SmallCard>
 	{/if}
 </div>

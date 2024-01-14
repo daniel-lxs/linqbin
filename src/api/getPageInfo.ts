@@ -4,13 +4,13 @@ import type { PageInfo } from '../types/PageInfo';
 let cachedResponse: PageInfo | null = null;
 let cachedUrl = '';
 
-export async function parsePageInfo(url: string): Promise<PageInfo | null> {
+export async function getPageInfo(url: string): Promise<PageInfo | null> {
 	if (url === cachedUrl && cachedResponse) {
 		return cachedResponse;
 	}
 
 	try {
-		const response = await axios.post<PageInfo>(`http://localhost:3000/page-info`, { url });
+		const response = await axios.post<PageInfo>(`http://localhost:4000/page-info`, { url });
 		cachedUrl = url;
 		cachedResponse = response.data;
 		console.log(cachedResponse);

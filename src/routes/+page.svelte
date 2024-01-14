@@ -1,17 +1,16 @@
 <script lang="ts">
 	import { debounce } from 'lodash-es';
 	import * as yup from 'yup';
-	import { CheckCircle2, X, XCircle, Check, Copy } from 'lucide-svelte';
-	import { popup } from '@skeletonlabs/skeleton';
+	import { CheckCircle2, X, XCircle } from 'lucide-svelte';
 	import UAParser from 'ua-parser-js';
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 	import { validateForm } from '../utils/validateForm';
 	import { validateUrl } from '../utils/validateUrl';
-	import { parsePageInfo } from '../api/parsePageInfo';
-	import { createNewEntry } from '../api/createEntry';
+	import { getPageInfo } from '../api/getPageInfo';
+	import { createNewEntry } from '../api/createNewEntry';
 	import type { Entry, NewEntryDto } from '../types/Entry';
-	import type { PopupSettings } from '@skeletonlabs/skeleton';
 	import Card from '../components/Card.svelte';
+	import ResultCard from '../components/ResultCard.svelte';
 	import { onMount } from 'svelte';
 
 	// Toaster initialization
@@ -25,8 +24,7 @@
 	// State variables
 	let isLoading = false;
 	let isLoadingTitle = false;
-	let isCopied = false;
-	let mobile = false; // Assign a default value or update as needed
+	let mobile = false;
 
 	// Form values
 	let form = {
@@ -37,7 +35,9 @@
 	};
 
 	// Entry and URL-related variables
-	let entry: Entry;
+	let entry: Entry & { passkey: string };
+
+	let entryUrlWithPasskey = '';
 	let entryUrl = '';
 
 	// Error tracking
@@ -69,14 +69,17 @@
 	// Function to fetch data with debounce
 	const fetchData = debounce(async () => {
 		try {
-			const newEntryDto: NewEntryDto = {
+			const newEntry: NewEntryDto = {
 				title: form.title === '' ? undefined : form.title,
 				content: form.content,
 				ttl: Number(form.ttl),
 				visitCountThreshold: Number(form.visitCountThreshold)
 			};
-			entry = await createNewEntry(newEntryDto);
-			entryUrl = `${window.location.origin}/e/${entry.slug}`;
+
+			entry = await createNewEntry(newEntry);
+			entryUrlWithPasskey = `${window.location.origin}/${entry.slug}-${entry.passkey}`;
+			entryUrl = `${window.location.origin}/${entry.slug}`;
+
 			isLoading = false;
 		} catch (error) {
 			t.message = 'Failed to create new entry, please try again later';
@@ -129,7 +132,7 @@
 	async function getPageTitle() {
 		isLoadingTitle = true;
 		try {
-			const pageInfo = await parsePageInfo(form.content);
+			const pageInfo = await getPageInfo(form.content);
 			if (!pageInfo) {
 				t.message = 'Failed to parse page info';
 				toastStore.trigger(t);
@@ -143,41 +146,6 @@
 			t.message = 'Failed to parse page info';
 			toastStore.trigger(t);
 			isLoadingTitle = false;
-		}
-	}
-
-	// Clipboard copy click handler
-	const popupCopied: PopupSettings = {
-		event: 'click',
-		target: 'popupCopied',
-		placement: 'top'
-	};
-	function handleCopyClick() {
-		isCopied = true;
-		navigator.clipboard.writeText(entryUrl);
-		setTimeout(() => {
-			isCopied = false;
-		}, 2000);
-	}
-
-	// Share click handler
-	function handleShareClick() {
-		// Implement share functionality, e.g., using the Web Share API
-		if (navigator.share) {
-			navigator
-				.share({
-					title: entry.title,
-					url: entryUrl
-				})
-				.then(() => {
-					console.log('Successfully shared');
-				})
-				.catch((error) => {
-					console.error('Error sharing:', error);
-				});
-		} else {
-			// Fallback for browsers that do not support the Web Share API
-			console.log('Web Share API is not supported in your browser.');
 		}
 	}
 
@@ -329,53 +297,6 @@
 			</section>
 		</Card>
 	{:else}
-		<div class="card variant-ghost p-6 mb-8 shadow-xl max-w-3xl w-full mx-auto">
-			<header class="card-header">
-				<h3 class="h3">Your new temporary link is ready</h3>
-			</header>
-			<section class="p-4">
-				{#if entry && entry.title}
-					<p class="text-sm">{entry.title}</p>
-				{/if}
-				<div class="card variant-soft p-4 flex items-start">
-					<section class="p-1 min-h-0">
-						<p>{entryUrl}</p>
-					</section>
-					<button
-						type="button"
-						class="btn btn-sm p-1 ml-auto flex-shrink-0"
-						on:click={handleCopyClick}
-						use:popup={popupCopied}
-					>
-						{#if isCopied}
-							<Check size="20" />
-						{:else}
-							<Copy size="20" />
-						{/if}
-					</button>
-					<aside class="card p-4 variant-filled-primary" data-popup="popupCopied">
-						<p>Copied!</p>
-						<div class="arrow variant-filled-primary"></div>
-					</aside>
-				</div>
-				{#if mobile}
-					<button
-						type="button"
-						class="btn btn-sm variant-soft-surface mt-2 mx-auto"
-						on:click={handleShareClick}
-					>
-						Share
-					</button>
-				{/if}
-			</section>
-			<div class="flex items-center justify-center">
-				<button
-					class="btn variant-filled-primary h-10 mb-2 mt-4"
-					on:click={() => (window.location.href = '/')}
-				>
-					Create new link
-				</button>
-			</div>
-		</div>
+		<ResultCard {entry} {entryUrl} {entryUrlWithPasskey} {mobile} />
 	{/if}
 </div>
