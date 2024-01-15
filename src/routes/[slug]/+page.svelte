@@ -1,11 +1,9 @@
 <script lang="ts">
 	import Card from '$lib/components/Card.svelte';
 	import SmallCard from '$lib/components/SmallCard.svelte';
-	import { decryptContent, validateUrl } from '$lib/utilities';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 	import { popup } from '@skeletonlabs/skeleton';
 	import { Check, Copy, Frown } from 'lucide-svelte';
-	import * as yup from 'yup';
 	import type { Entry } from '../../types/Entry';
 	import type { PageData } from './$types';
 
@@ -41,10 +39,12 @@
 		if (!entry || !passkey) return;
 
 		try {
+			const { decryptContent } = await import('$lib/utilities');
 			decryptedContent = await decryptContent(entry.content, passkey);
 
 			if (!decryptedContent) return;
 
+			const { validateUrl } = await import('$lib/utilities');
 			const [isURLValid] = await Promise.all([validateUrl(decryptedContent)]);
 
 			if (isURLValid) {
@@ -59,6 +59,7 @@
 	}
 
 	async function handleUnlock() {
+		const yup = await import('yup');
 		if (yup.string().length(6).required().isValidSync(enteredPasskey)) {
 			window.location.href = `/${data.slug}-${enteredPasskey}`;
 		} else {
