@@ -3,3 +3,4 @@ export * from './encryptContent';
 export * from './decryptContent';
 export * from './validateUrl';
 export * from './validateForm';
+export * from './splitSlug';
