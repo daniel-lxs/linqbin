@@ -35,19 +35,17 @@
 		}, 2000);
 	}
 
-	function handleShareClick() {
+	async function handleShareClick() {
 		if (navigator.share) {
-			navigator
-				.share({
+			try {
+				await navigator.share({
 					title: entry.title,
 					url: entryUrl
-				})
-				.then(() => {
-					console.log('Successfully shared');
-				})
-				.catch((error) => {
-					console.error('Error sharing:', error);
 				});
+				console.log('Successfully shared');
+			} catch (error) {
+				console.error('Error sharing:', error);
+			}
 		} else {
 			console.log('Web Share API is not supported in your browser.');
 		}

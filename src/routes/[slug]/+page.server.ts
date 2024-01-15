@@ -20,6 +20,7 @@ export async function load({ params }) {
 			return {
 				status: 404,
 				slug,
+				entry: null,
 				passkey
 			};
 		}
@@ -27,7 +28,15 @@ export async function load({ params }) {
 		return {
 			status: 404,
 			slug,
-			passkey: undefined
+			entry: null,
+			passkey: null
 		};
 	}
+
+	return {
+		status: 404,
+		slug: null,
+		entry: null,
+		passkey: null
+	};
 }
