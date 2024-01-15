@@ -5,13 +5,12 @@
 	import { popup, type PopupSettings } from '@skeletonlabs/skeleton';
 	import type { Entry } from '../../types/Entry';
 
-	export let entry: Entry;
-	export let entryUrlWithPasskey: string;
+	export let entryWithPasskey: Entry & { passkey: string };
 	export let entryUrl: string;
-	export let mobile: boolean;
 
 	let isCopied1: boolean;
 	let isCopied2: boolean;
+	let isCopied3: boolean;
 
 	const popupCopied: PopupSettings = {
 		event: 'click',
@@ -21,7 +20,7 @@
 
 	function handleCopy1Click() {
 		isCopied1 = true;
-		navigator.clipboard.writeText(entryUrlWithPasskey);
+		navigator.clipboard.writeText(`${entryUrl}+${entryWithPasskey.passkey}`);
 		setTimeout(() => {
 			isCopied1 = false;
 		}, 2000);
@@ -35,20 +34,12 @@
 		}, 2000);
 	}
 
-	async function handleShareClick() {
-		if (navigator.share) {
-			try {
-				await navigator.share({
-					title: entry.title,
-					url: entryUrl
-				});
-				console.log('Successfully shared');
-			} catch (error) {
-				console.error('Error sharing:', error);
-			}
-		} else {
-			console.log('Web Share API is not supported in your browser.');
-		}
+	function handleCopy3Click() {
+		isCopied3 = true;
+		navigator.clipboard.writeText(entryWithPasskey.passkey);
+		setTimeout(() => {
+			isCopied3 = false;
+		}, 2000);
 	}
 </script>
 
@@ -57,12 +48,12 @@
 		<h3 class="h3">Your new temporary link is ready!</h3>
 	</header>
 	<section class="p-4">
-		{#if entry && entry.title}
-			<p class="text-lg mb-4">{entry.title}</p>
+		{#if entryWithPasskey && entryWithPasskey.title}
+			<p class="text-lg mb-4">{entryWithPasskey.title}</p>
 		{/if}
 		<div class="card variant-soft p-4 flex items-start">
 			<section class="p-1 min-h-0">
-				<p>{entryUrlWithPasskey}</p>
+				<p>{`${entryUrl}+${entryWithPasskey.passkey}`}</p>
 			</section>
 			<button
 				type="button"
@@ -83,38 +74,51 @@
 		</div>
 		<p class="text-sm mt-1 mb-8">Share this link to include the passkey in the URL</p>
 
-		<div class="card variant-soft p-4 flex items-start">
-			<section class="p-1 min-h-0">
-				<p>{entryUrl}</p>
-			</section>
-			<button
-				type="button"
-				class="btn btn-sm p-1 ml-auto flex-shrink-0"
-				on:click={handleCopy2Click}
-				use:popup={popupCopied}
-			>
-				{#if isCopied2}
-					<Check size="20" />
-				{:else}
-					<Copy size="20" />
-				{/if}
-			</button>
-			<aside class="card p-4 variant-filled-primary" data-popup="popupCopied">
-				<p>Copied!</p>
-				<div class="arrow variant-filled-primary"></div>
-			</aside>
+		<div class="flex flex-col md:flex-row md:items-center md:justify-center">
+			<div class="card variant-soft p-4 w-full flex items-start">
+				<section class="p-1 min-h-0">
+					<p>{entryUrl}</p>
+				</section>
+				<button
+					type="button"
+					class="btn btn-sm p-1 ml-auto flex-shrink-0"
+					on:click={handleCopy2Click}
+					use:popup={popupCopied}
+				>
+					{#if isCopied2}
+						<Check size="20" />
+					{:else}
+						<Copy size="20" />
+					{/if}
+				</button>
+				<aside class="card p-4 variant-filled-primary" data-popup="popupCopied">
+					<p>Copied!</p>
+					<div class="arrow variant-filled-primary"></div>
+				</aside>
+			</div>
+			<div class="card variant-soft p-4 mt-2 sm:mt-0 sm:w-full sm:ml-2 flex items-start">
+				<section class="p-1 min-h-0">
+					<p>{entryWithPasskey.passkey}</p>
+				</section>
+				<button
+					type="button"
+					class="btn btn-sm p-1 ml-auto flex-shrink-0"
+					on:click={handleCopy3Click}
+					use:popup={popupCopied}
+				>
+					{#if isCopied3}
+						<Check size="20" />
+					{:else}
+						<Copy size="20" />
+					{/if}
+				</button>
+				<aside class="card p-4 variant-filled-primary" data-popup="popupCopied">
+					<p>Copied!</p>
+					<div class="arrow variant-filled-primary"></div>
+				</aside>
+			</div>
 		</div>
 		<p class="text-sm mt-1">Share this link if you prefer to provide the passkey separately.</p>
-
-		{#if mobile}
-			<button
-				type="button"
-				class="btn btn-sm variant-soft-surface mt-2 mx-auto"
-				on:click={handleShareClick}
-			>
-				Share
-			</button>
-		{/if}
 	</section>
 	<div class="flex items-center justify-center">
 		<button
