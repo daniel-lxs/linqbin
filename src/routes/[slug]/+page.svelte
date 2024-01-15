@@ -1,13 +1,13 @@
 <script lang="ts">
+	import Card from '$lib/components/Card.svelte';
+	import SmallCard from '$lib/components/SmallCard.svelte';
+	import { decryptContent, validateUrl } from '$lib/utilities';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 	import { popup } from '@skeletonlabs/skeleton';
 	import { Check, Copy, Frown } from 'lucide-svelte';
 	import * as yup from 'yup';
-	import Card from '../../components/Card.svelte';
-	import SmallCard from '../../components/SmallCard.svelte';
-	import { decryptContent, validateUrl } from '$lib';
-	import type { PageData } from './$types';
 	import type { Entry } from '../../types/Entry';
+	import type { PageData } from './$types';
 
 	export let data: PageData;
 

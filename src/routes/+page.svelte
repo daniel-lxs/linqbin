@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { debounce } from 'lodash-es';
-	import * as yup from 'yup';
-	import { CheckCircle2, X, XCircle } from 'lucide-svelte';
-	import UAParser from 'ua-parser-js';
+	import Card from '$lib/components/Card.svelte';
+	import ResultCard from '$lib/components/ResultCard.svelte';
+	import { validateForm, validateUrl } from '$lib/utilities';
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
-	import { validateUrl, validateForm } from '$lib';
-	import { getPageInfo } from '../api/getPageInfo';
-	import { createNewEntry } from '../api/createNewEntry';
-	import type { Entry, NewEntryDto } from '../types/Entry';
-	import Card from '../components/Card.svelte';
-	import ResultCard from '../components/ResultCard.svelte';
+	import { debounce } from 'lodash-es';
+	import { CheckCircle2, X, XCircle } from 'lucide-svelte';
 	import { onMount } from 'svelte';
+	import UAParser from 'ua-parser-js';
+	import * as yup from 'yup';
+	import { createNewEntry } from '../api/createNewEntry';
+	import { getPageInfo } from '../api/getPageInfo';
+	import type { Entry, NewEntryDto } from '../types/Entry';
 
 	// Toaster initialization
 	const toastStore = getToastStore();

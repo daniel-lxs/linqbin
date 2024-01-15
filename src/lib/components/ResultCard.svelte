@@ -3,7 +3,7 @@
 <script lang="ts">
 	import { Copy, Check } from 'lucide-svelte';
 	import { popup, type PopupSettings } from '@skeletonlabs/skeleton';
-	import type { Entry } from '../types/Entry';
+	import type { Entry } from '../../types/Entry';
 
 	export let entry: Entry;
 	export let entryUrlWithPasskey: string;
