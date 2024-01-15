@@ -45,6 +45,7 @@
     "@floating-ui/dom": "^1.5.4",
     "axios": "^1.6.5",
     "crypto-js": "^4.2.0",
+    "dotenv": "^16.3.1",
     "lodash-es": "^4.17.21",
     "lucide-svelte": "^0.307.0",
     "ua-parser-js": "^1.0.37",

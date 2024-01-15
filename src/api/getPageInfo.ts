@@ -10,7 +10,7 @@ export async function getPageInfo(url: string): Promise<PageInfo | null> {
 	}
 
 	try {
-		const response = await axios.post<PageInfo>(`http://localhost:4000/page-info`, { url });
+		const response = await axios.post<PageInfo>(`${process.env.API_URL}/page-info`, { url });
 		cachedUrl = url;
 		cachedResponse = response.data;
 		console.log(cachedResponse);

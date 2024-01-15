@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { Entry, NewEntryDto } from '../types/Entry';
 import { getNewPasskey } from './getNewPasskey';
-import { encryptContent } from '$lib';
+import { encryptContent } from '$lib/utilities';
 
 export async function createNewEntry({
 	title,
@@ -23,7 +23,7 @@ export async function createNewEntry({
 
 		const encryptedContent = encryptContent(content, passkey);
 
-		const result = await axios.post<Entry>('http://localhost:4000/entry', {
+		const result = await axios.post<Entry>(`${process.env.API_URL}/entry`, {
 			title,
 			content: encryptedContent,
 			visitCountThreshold,
