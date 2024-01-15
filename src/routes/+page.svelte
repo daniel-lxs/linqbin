@@ -1,15 +1,10 @@
 <script lang="ts">
 	import Card from '$lib/components/Card.svelte';
 	import ResultCard from '$lib/components/ResultCard.svelte';
-	import { validateForm, validateUrl } from '$lib/utilities';
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash-es';
 	import { CheckCircle2, X, XCircle } from 'lucide-svelte';
-	import { onMount } from 'svelte';
-	import UAParser from 'ua-parser-js';
 	import * as yup from 'yup';
-	import { createNewEntry } from '../api/createNewEntry';
-	import { getPageInfo } from '../api/getPageInfo';
 	import type { Entry, NewEntryDto } from '../types/Entry';
 
 	// Toaster initialization
@@ -34,9 +29,8 @@
 	};
 
 	// Entry and URL-related variables
-	let entry: Entry & { passkey: string };
+	let entryWithPasskey: Entry & { passkey: string };
 
-	let entryUrlWithPasskey = '';
 	let entryUrl = '';
 
 	// Error tracking
@@ -75,13 +69,14 @@
 				visitCountThreshold: Number(form.visitCountThreshold)
 			};
 
-			entry = await createNewEntry(newEntry);
-			entryUrlWithPasskey = `${window.location.origin}/${entry.slug}-${entry.passkey}`;
-			entryUrl = `${window.location.origin}/${entry.slug}`;
+			const { createNewEntry } = await import('../api/createNewEntry');
+			entryWithPasskey = await createNewEntry(newEntry);
+
+			entryUrl = `${window.location.origin.split('//')[1]}/${entryWithPasskey.slug}`;
 
 			isLoading = false;
 		} catch (error) {
-			t.message = 'Failed to create new entry, please try again later';
+			t.message = 'Failed to create new entryWithPasskey, please try again later';
 			toastStore.trigger(t);
 			isLoading = false;
 		}
@@ -90,7 +85,10 @@
 	// Form submission handler
 	async function handleSubmit() {
 		isLoading = true;
+
+		const { validateForm } = await import('$lib/utilities');
 		errors = await validateForm(form, formSchema);
+
 		if (Object.keys(errors).length === 0) {
 			fetchData();
 			isLoading = false;
@@ -105,7 +103,9 @@
 	async function handleTextareaInput() {
 		errors.content = '';
 
+		const { validateUrl } = await import('$lib/utilities');
 		isValidUrl = await validateUrl(form.content);
+
 		const hasContent = form.content !== '';
 		const hasTitle = form.title !== '';
 
@@ -121,6 +121,7 @@
 
 	// Title blur handler
 	async function handleTitleBlur() {
+		const { validateUrl } = await import('$lib/utilities');
 		isValidUrl = await validateUrl(form.content);
 		if (isValidUrl && form.title === '' && !isLoadingTitle && form.content !== '') {
 			getPageTitle();
@@ -131,7 +132,9 @@
 	async function getPageTitle() {
 		isLoadingTitle = true;
 		try {
+			const { getPageInfo } = await import('../api/getPageInfo');
 			const pageInfo = await getPageInfo(form.content);
+
 			if (!pageInfo) {
 				t.message = 'Failed to parse page info';
 				toastStore.trigger(t);
@@ -147,17 +150,10 @@
 			isLoadingTitle = false;
 		}
 	}
-
-	// UA Parser initialization
-	let parser = new UAParser();
-	onMount(() => {
-		parser.setUA(navigator.userAgent);
-		mobile = parser.getResult().device['type'] == 'mobile';
-	});
 </script>
 
 <div class="flex items-center justify-center h-full">
-	{#if !entry}
+	{#if !entryWithPasskey}
 		<Card>
 			<header class="card-header">
 				<h3 class="h3">Create new temporary link</h3>
@@ -296,6 +292,6 @@
 			</section>
 		</Card>
 	{:else}
-		<ResultCard {entry} {entryUrl} {entryUrlWithPasskey} {mobile} />
+		<ResultCard {entryWithPasskey} {entryUrl} />
 	{/if}
 </div>
