@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { Entry, NewEntryDto } from '../types/Entry';
 import { getNewPasskey } from './getNewPasskey';
-import { encryptContent } from '../utils/encryptContent';
+import { encryptContent } from '$lib';
 
 export async function createNewEntry({
 	title,

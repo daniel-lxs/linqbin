@@ -4,8 +4,7 @@
 	import { CheckCircle2, X, XCircle } from 'lucide-svelte';
 	import UAParser from 'ua-parser-js';
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
-	import { validateForm } from '../utils/validateForm';
-	import { validateUrl } from '../utils/validateUrl';
+	import { validateUrl, validateForm } from '$lib';
 	import { getPageInfo } from '../api/getPageInfo';
 	import { createNewEntry } from '../api/createNewEntry';
 	import type { Entry, NewEntryDto } from '../types/Entry';

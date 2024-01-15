@@ -5,8 +5,7 @@
 	import * as yup from 'yup';
 	import Card from '../../components/Card.svelte';
 	import SmallCard from '../../components/SmallCard.svelte';
-	import { decryptContent } from '../../utils/decryptContent';
-	import { validateUrl } from '../../utils/validateUrl';
+	import { decryptContent, validateUrl } from '$lib';
 	import type { PageData } from './$types';
 	import type { Entry } from '../../types/Entry';
 
