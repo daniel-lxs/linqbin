@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { PageInfo } from '../types/PageInfo';
+import { PUBLIC_API_URL } from '$env/static/public';
 
 let cachedResponse: PageInfo | null = null;
 let cachedUrl = '';
@@ -10,7 +11,7 @@ export async function getPageInfo(url: string): Promise<PageInfo | null> {
 	}
 
 	try {
-		const response = await axios.post<PageInfo>(`${process.env.API_URL}/page-info`, { url });
+		const response = await axios.post<PageInfo>(`${PUBLIC_API_URL}/page-info`, { url });
 		cachedUrl = url;
 		cachedResponse = response.data;
 		console.log(cachedResponse);
