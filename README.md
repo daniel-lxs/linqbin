@@ -1,38 +1,42 @@
-# create-svelte
+# Linqbin
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+## Overview
 
-## Creating a project
+**Version:** 1.0.0
+**License:** MIT
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Description
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+Linqbin is a project designed to serve as a temporary and encrypted link shortner service.
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+## Installation and Usage
 
-## Developing
+### Development
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+1. Clone the repository.
+2. Run `npm install` to install dependencies.
+3. Use `npm run dev` to start the development server.
 
-```bash
-npm run dev
+### Building
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+- Execute `npm run build` to build the project.
+- Preview the build with `npm run preview`.
 
-## Building
+### Code Quality
 
-To create a production version of your app:
+- Run `npm run lint` to check code style and formatting.
+- Use `npm run format` to auto-format code.
 
-```bash
-npm run build
-```
+## Configuration
 
-You can preview the production build with `npm run preview`.
+Linqbin utilizes the following configuration files:
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+- It is necessary to provide an environment variable specifying the API URL from linqbin-backend.
+
+## Contributing
+
+Contributions are welcome! Feel free to submit issues or pull requests.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
