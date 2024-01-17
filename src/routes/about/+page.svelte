@@ -2,6 +2,10 @@
 	import Card from '$lib/components/Card.svelte';
 </script>
 
+<svelte:head>
+	<title>Linqbin</title>
+	<meta name="description" content="Create temporary links with Linqbin" />
+</svelte:head>
 <div class="flex items-center justify-center h-full">
 	<Card>
 		<header class="card-header">

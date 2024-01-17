@@ -6,6 +6,7 @@
 	import { Check, Copy, Frown } from 'lucide-svelte';
 	import type { Entry } from '../../types/Entry';
 	import type { PageData } from './$types';
+	import { onMount } from 'svelte';
 
 	export let data: PageData;
 
@@ -89,8 +90,19 @@
 		}, 1000);
 	}
 
-	$: processEntry(data.entry, data.passkey);
+	onMount(async () => {
+		await processEntry(data.entry, data.passkey);
+	});
 </script>
+
+<svelte:head>
+	{#if !data.entry}
+		<title>Linqbin</title>
+	{:else}
+		<title>{data.entry.title ? data.entry.title : 'Untitled link'}</title>
+	{/if}
+	<meta name="description" content="Create temporary links with Linqbin" />
+</svelte:head>
 
 <div class="flex items-center justify-center h-full">
 	{#if data.slug}
