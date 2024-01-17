@@ -12,8 +12,7 @@
 			<div class="mt-4">
 				<h3 class="text-lg font-semibold mb-2">What is Linqbin?</h3>
 				<p>
-					Linqbin is a project designed to serve as a temporary link shortner platform, tailored for
-					seamless integration with Discord.
+					Linqbin is a project designed to serve as a temporary and encrypted link shortner service.
 				</p>
 
 				<h3 class="text-lg font-semibold mt-4 mb-2">What does it do?</h3>
