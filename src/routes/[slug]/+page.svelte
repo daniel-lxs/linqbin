@@ -37,22 +37,30 @@
 			return;
 		}
 
-		if (!entry || !passkey) return;
+		if (!entry || !passkey) {
+      isLoading = false;
+      return;
+    };
 
 		try {
 			const { decryptContent } = await import('$lib/utilities');
 			decryptedContent = await decryptContent(entry.content, passkey);
 
-			if (!decryptedContent) return;
+			if (!decryptedContent) {
+        isLoading = false;
+        return;
+      };
 
 			const { validateUrl } = await import('$lib/utilities');
 			const [isURLValid] = await Promise.all([validateUrl(decryptedContent)]);
 
 			if (isURLValid) {
+        isLoading = false;
 				shouldRedirect = true;
 				startCountdown();
 			}
 		} catch (error) {
+      window.location.href = '/';
 			console.error(error);
 		} finally {
 			isLoading = false;
