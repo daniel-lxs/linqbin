@@ -76,7 +76,7 @@
 
 			isLoading = false;
 		} catch (error) {
-			t.message = 'Failed to create new entryWithPasskey, please try again later';
+			t.message = 'Failed to create new entry, please try again later';
 			toastStore.trigger(t);
 			isLoading = false;
 		}
