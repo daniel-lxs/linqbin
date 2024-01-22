@@ -18,7 +18,6 @@
 	// State variables
 	let isLoading = false;
 	let isLoadingTitle = false;
-	let mobile = false;
 
 	// Form values
 	let form = {
@@ -91,7 +90,6 @@
 
 		if (Object.keys(errors).length === 0) {
 			fetchData();
-			isLoading = false;
 		} else {
 			isLoading = false;
 		}
