@@ -7,6 +7,7 @@
 	import type { Entry } from '../../types/Entry';
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 
 	export let data: PageData;
 
@@ -18,8 +19,9 @@
 	let countdownNumber: number = 3;
 	let redirectMessage = 'Redirecting...';
 	let decryptedContent: string | null = null;
+	let passkey: string | null = '';
 	let passkeyError = '';
-	let enteredPasskey = '';
+	let inputPasskey = '';
 
 	// Popup settings for copy functionality
 	const popupCopied: PopupSettings = {
@@ -38,29 +40,30 @@
 		}
 
 		if (!entry || !passkey) {
-      isLoading = false;
-      return;
-    };
+			isLoading = false;
+			return;
+		}
 
 		try {
 			const { decryptContent } = await import('$lib/utilities');
 			decryptedContent = await decryptContent(entry.content, passkey);
 
 			if (!decryptedContent) {
-        isLoading = false;
-        return;
-      };
+				isLoading = false;
+				return;
+			}
 
 			const { validateUrl } = await import('$lib/utilities');
 			const [isURLValid] = await Promise.all([validateUrl(decryptedContent)]);
 
 			if (isURLValid) {
-        isLoading = false;
+				isLoading = false;
 				shouldRedirect = true;
-				startCountdown();
+				window.location.href = decryptedContent as string;
+				return;
 			}
 		} catch (error) {
-      window.location.href = '/';
+			window.location.href = '/';
 			console.error(error);
 		} finally {
 			isLoading = false;
@@ -69,8 +72,8 @@
 
 	async function handleUnlock() {
 		const yup = await import('yup');
-		if (yup.string().length(6).required().isValidSync(enteredPasskey)) {
-			window.location.href = `/${data.slug}-${enteredPasskey}`;
+		if (yup.string().length(6).required().isValidSync(inputPasskey)) {
+			window.location.href = `/${data.slug}-${inputPasskey}`;
 		} else {
 			passkeyError = 'Invalid passkey';
 		}
@@ -85,21 +88,10 @@
 		}, 2000);
 	}
 
-	// Start countdown function
-	function startCountdown(): void {
-		countdown = window.setInterval(() => {
-			if (countdownNumber > 0) {
-				redirectMessage = `Redirecting in ${countdownNumber}...`;
-				countdownNumber--;
-			} else {
-				window.clearInterval(countdown);
-				window.location.href = decryptedContent as string;
-			}
-		}, 1000);
-	}
-
 	onMount(async () => {
-		await processEntry(data.entry, data.passkey);
+		passkey = data.passkey;
+		if (!passkey) passkey = $page.url.hash.substring(1);
+		await processEntry(data.entry, passkey);
 	});
 </script>
 
@@ -125,7 +117,7 @@
 					</div>
 				</section>
 			</Card>
-		{:else if !data.passkey}
+		{:else if !passkey}
 			<SmallCard>
 				<div class="flex items-center justify-center w-full">
 					<header class="card-header flex items-center">
@@ -141,7 +133,7 @@
 							id="passkey"
 							spellcheck="false"
 							required
-							bind:value={enteredPasskey}
+							bind:value={inputPasskey}
 							on:input={() => (passkeyError = '')}
 							placeholder="To access the link, please enter the provided passkey"
 						/>

@@ -13,37 +13,28 @@ export async function load({ params }) {
 		};
 	}
 
-	const passkey = splitSlug(slug).passkey;
+	const { passkey, entry } = await getPasskeyAndEntry(slug);
 
-	if (!passkey || passkey.length === 0) {
+	if (entry && passkey) {
+		const decryptedContent = decryptContent(entry.content, passkey);
+
+		if (decryptedContent && (await validateUrl(decryptedContent))) {
+			redirect(302, decryptedContent);
+		}
+
+		return { status: 200, entry, slug, passkey };
+	} else {
 		return {
-			status: 404,
+			status: entry ? 200 : 404,
 			slug,
-			entry: null,
-			passkey: null
-		};
-	}
-
-	const entry = await findEntryBySlug(slug);
-
-	if (!entry) {
-		return {
-			status: 404,
-			slug,
-			entry: null,
+			entry,
 			passkey
 		};
 	}
+}
 
-	const content = decryptContent(entry.content, passkey);
-	if (content && (await validateUrl(content))) {
-		redirect(302, content);
-	}
-
-	return {
-		status: 200,
-		entry,
-		slug,
-		passkey
-	};
+async function getPasskeyAndEntry(slug: string) {
+	const passkey = splitSlug(slug).passkey;
+	const entry = await findEntryBySlug(slug);
+	return { passkey, entry };
 }
