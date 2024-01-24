@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Card from '$lib/components/Card.svelte';
-	import SmallCard from '$lib/components/SmallCard.svelte';
+	import Card from '$lib/components/simple/Card.svelte';
+	import SmallCard from '$lib/components/simple/SmallCard.svelte';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 	import { popup } from '@skeletonlabs/skeleton';
 	import { Check, Copy, Frown } from 'lucide-svelte';
@@ -15,8 +15,6 @@
 	let isLoading = true;
 	let shouldRedirect = false;
 	let isCopied = false;
-	let countdown: number;
-	let countdownNumber: number = 3;
 	let redirectMessage = 'Redirecting...';
 	let decryptedContent: string | null = null;
 	let passkey: string | null = '';
@@ -35,12 +33,12 @@
 
 	async function processEntry(entry: Entry | null, passkey: string | null) {
 		if (!data.slug) {
-			window.location.href = '/';
+			redirectToHomepage();
 			return;
 		}
 
 		if (!entry || !passkey) {
-			isLoading = false;
+			setLoading(false);
 			return;
 		}
 
@@ -49,43 +47,65 @@
 			decryptedContent = await decryptContent(entry.content, passkey);
 
 			if (!decryptedContent) {
-				isLoading = false;
+				setLoading(false);
 				return;
 			}
 
-			const { validateUrl } = await import('$lib/utilities');
-			const [isURLValid] = await Promise.all([validateUrl(decryptedContent)]);
-
-			if (isURLValid) {
-				isLoading = false;
-				shouldRedirect = true;
-				window.location.href = decryptedContent as string;
-				return;
-			}
+			await handleValidContent();
 		} catch (error) {
-			window.location.href = '/';
+			redirectToHomepage();
 			console.error(error);
 		} finally {
-			isLoading = false;
+			setLoading(false);
 		}
+	}
+
+	async function handleValidContent() {
+		const { validateUrl } = await import('$lib/utilities');
+		const [isURLValid] = await Promise.all([validateUrl(decryptedContent as string)]);
+
+		if (isURLValid) {
+			shouldRedirect = true;
+			redirectToDecryptedContent();
+		}
+	}
+
+	function redirectToHomepage() {
+		window.location.href = '/';
+	}
+
+	function redirectToDecryptedContent() {
+		window.location.href = decryptedContent as string;
 	}
 
 	async function handleUnlock() {
 		const yup = await import('yup');
 		if (yup.string().length(6).required().isValidSync(inputPasskey)) {
-			window.location.href = `/${data.slug}-${inputPasskey}`;
+			redirectToDynamicUrl();
 		} else {
 			passkeyError = 'Invalid passkey';
 		}
 	}
 
+	function redirectToDynamicUrl() {
+		window.location.href = `/${data.slug}-${inputPasskey}`;
+	}
+
 	// Copy click handler
 	function handleCopyClick() {
 		isCopied = true;
-		navigator.clipboard.writeText(decryptedContent as string);
+		copyToClipboard(decryptedContent as string);
 		setTimeout(() => {
 			isCopied = false;
 		}, 2000);
+	}
+
+	function copyToClipboard(content: string) {
+		navigator.clipboard.writeText(content);
+	}
+
+	function setLoading(value: boolean) {
+		isLoading = value;
 	}
 
 	onMount(async () => {
