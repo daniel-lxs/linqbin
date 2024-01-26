@@ -143,14 +143,14 @@
 	// Entry mode
 	let entryMode = 'url';
 	let cardTitle = 'Create new temporary link';
-	let cardDescription = 'Paste your URL(s) to create a new temporary short link';
+	let cardDescription = 'Paste your long URL to create a new temporary short link';
 	let rows = 1;
 	function updateCardHeader() {
 		if (tabSet === 0) {
 			isValidUrl = false;
 			entryMode = 'url';
 			cardTitle = 'Create new temporary link';
-			cardDescription = 'Paste your URL(s) to create a new temporary short link';
+			cardDescription = 'Paste your longURL to create a new temporary short link';
 			rows = 1;
 		} else {
 			isValidUrl = false;
@@ -163,156 +163,160 @@
 </script>
 
 <Card>
-	<TabGroup>
-		<Tab bind:group={tabSet} name="tab1" value={0} on:change={updateCardHeader}>
-			<span>Link</span>
+	<TabGroup
+		justify="justify-center"
+		active="variant-filled-primary"
+		hover="hover:variant-soft-primary"
+		flex="flex-1 lg:flex-none"
+		rounded="rounded"
+		class="border-b-1 border-surface-400-500-token w-full space-x-2 "
+	>
+		<Tab class="w-1/3 mb-2" bind:group={tabSet} name="tab1" value={0} on:change={updateCardHeader}>
+			<span class="text-lg">Link</span>
 		</Tab>
-		<Tab bind:group={tabSet} name="tab2" value={1} on:change={updateCardHeader}>Text</Tab>
-		<!-- Tab Panels --->
-		<svelte:fragment slot="panel">
-			<header class="card-header">
-				<h3 class="h3">{cardTitle}</h3>
-				<p class="mt-2">{cardDescription}</p>
-			</header>
-			<section class="p-4">
-				<form on:submit|preventDefault={handleSubmit}>
-					<div class=" mt-4 mb-4">
-						{#if entryMode === 'url'}
-							<input
-								class="input variant-form-material w-full"
-								type="text"
-								name="content"
-								title="Content"
-								aria-label="URL"
-								placeholder="Paste your URL(s) here..."
-								on:input={handleContentInput}
-								bind:value={form.content}
-								spellcheck="false"
-							/>
-						{:else}
-							<textarea
-								class="textarea variant-form-material {errors.content ? 'input-error' : ''}"
-								{rows}
-								placeholder="Enter your plain text here..."
-								name="content"
-								aria-label="Enter your plain text here..."
-								bind:value={form.content}
-								on:input={handleContentInput}
-								spellcheck="false"
-								title="Content"
-								required
-							></textarea>
-						{/if}
-						{#if errors.content}
-							<div class="text-error-500">{errors.content}</div>
-						{/if}
-						<div class="mt-6 w-full grid-cols-[1fr_auto] relative">
-							<div class="relative w-1/2">
-								<input
-									class="input variant-form-material w-full pl-3 pr-8 {errors.title
-										? 'input-error'
-										: ''}"
-									type="text"
-									name="title"
-									aria-label="Title"
-									placeholder={isLoadingTitle ? 'Loading Title...' : 'Title (Optional)'}
-									bind:value={form.title}
-									on:blur={handleTitleBlur}
-									on:input={() => (errors.title = '')}
-									title="Title (Optional)"
-									maxlength="100"
-								/>
-								{#if !isLoadingTitle && form.title !== ''}
-									<button
-										type="button"
-										class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-										on:click={() => (form.title = '')}
-										title="Clear title"
-									>
-										<X />
-									</button>
-								{:else if isValidUrl && form.title === ''}
-									<button
-										type="button"
-										class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-										on:click={() => getPageTitle()}
-										title="Fetch title from website"
-									>
-										<ArrowDownToLine />
-									</button>
-								{/if}
-							</div>
-							{#if errors.title}
-								<div class="text-error-500">{errors.title}</div>
-							{/if}
-						</div>
-					</div>
-					<div class="flex flex-col sm:flex-row sm:flex-wrap">
-						<div class="flex flex-col sm:flex-row md:space-x-4 mb-2">
-							<div class="sm:w-1/2 md:w-1/3 min-w-36">
-								<label class="label mb-2">
-									<span>Access Duration:</span>
-									<select
-										class="select variant-form-material {errors.ttl ? 'input-error' : ''}"
-										aria-label="Access Duration"
-										name="ttl"
-										bind:value={form.ttl}
-										on:input={() => (errors.ttl = '')}
-										title="Select the duration after which the link will expire"
-									>
-										<option value="1">1 Hour</option>
-										<option value="12">12 Hours</option>
-										<option value="24">1 Day</option>
-										<option value="168">1 Week</option>
-									</select>
-								</label>
-								{#if errors.ttl}
-									<div
-										class="text-error-500 absolute w-full whitespace-nowrap overflow-hidden overflow-ellipsis"
-									>
-										{errors.ttl}
-									</div>
-								{/if}
-							</div>
-
-							<div class="sm:w-1/2 md:w-1/3 min-w-36">
-								<label class="label mb-2">
-									<span>Access Limit:</span>
-									<select
-										class="select variant-form-material {errors.visitCountThreshold
-											? 'input-error'
-											: ''}"
-										aria-label="Access Limit"
-										name="visitCountThreshold"
-										bind:value={form.visitCountThreshold}
-										on:input={() => (errors.visitCountThreshold = '')}
-										title="Select the number of views after which the link expires"
-									>
-										<option value="0">No Limit</option>
-										<option value="1">1 View</option>
-										<option value="10">10 Views</option>
-										<option value="20">20 Views</option>
-										<option value="50">50 Views</option>
-										<option value="100">100 Views</option>
-									</select>
-								</label>
-								{#if errors.visitCountThreshold}
-									<div
-										class="text-error-500 absolute w-full whitespace-nowrap overflow-hidden overflow-ellipsis"
-									>
-										{errors.ttl}
-									</div>
-								{/if}
-							</div>
-						</div>
-					</div>
-					<div class="flex items-end justify-end">
-						<button class="btn variant-filled-primary h-10 mb-2" type="submit">
-							{isLoading ? 'Creating...' : 'Create'}
-						</button>
-					</div>
-				</form>
-			</section>
-		</svelte:fragment>
+		<Tab class="w-1/3 mb-2" bind:group={tabSet} name="tab2" value={1} on:change={updateCardHeader}>
+			<span class="text-lg">Text</span>
+		</Tab>
 	</TabGroup>
+	<header class="card-header">
+		<h3 class="h3">{cardTitle}</h3>
+		<p class="mt-4">{cardDescription}</p>
+	</header>
+	<section class="p-4">
+		<form on:submit|preventDefault={handleSubmit}>
+			<div class=" mt-4 mb-4">
+				{#if entryMode === 'url'}
+					<input
+						class="input variant-form-material w-full"
+						type="text"
+						name="content"
+						title="Content"
+						aria-label="URL"
+						placeholder="Paste your long URL here..."
+						on:input={handleContentInput}
+						bind:value={form.content}
+						spellcheck="false"
+					/>
+				{:else}
+					<textarea
+						class="textarea variant-form-material {errors.content ? 'input-error' : ''}"
+						{rows}
+						placeholder="Enter your plain text here..."
+						name="content"
+						aria-label="Enter your plain text here..."
+						bind:value={form.content}
+						on:input={handleContentInput}
+						spellcheck="false"
+						title="Content"
+						required
+					></textarea>
+				{/if}
+				{#if errors.content}
+					<div class="text-error-500">{errors.content}</div>
+				{/if}
+				<div class="mt-6 w-full grid-cols-[1fr_auto] relative">
+					<div class="relative w-1/2">
+						<input
+							class="input variant-form-material {errors.title ? 'input-error' : ''}"
+							type="text"
+							name="title"
+							aria-label="Title"
+							placeholder={isLoadingTitle ? 'Loading Title...' : 'Title (Optional)'}
+							bind:value={form.title}
+							on:blur={handleTitleBlur}
+							on:input={() => (errors.title = '')}
+							title="Title (Optional)"
+							maxlength="100"
+						/>
+						{#if !isLoadingTitle && form.title !== ''}
+							<button
+								type="button"
+								class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+								on:click={() => (form.title = '')}
+								title="Clear title"
+							>
+								<X />
+							</button>
+						{:else if isValidUrl && form.title === ''}
+							<button
+								type="button"
+								class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+								on:click={() => getPageTitle()}
+								title="Fetch title from website"
+							>
+								<ArrowDownToLine />
+							</button>
+						{/if}
+					</div>
+					{#if errors.title}
+						<div class="text-error-500">{errors.title}</div>
+					{/if}
+				</div>
+			</div>
+			<div class="flex flex-col sm:flex-row sm:flex-wrap">
+				<div class="flex flex-col sm:flex-row md:space-x-4 mb-2">
+					<div class="sm:w-1/2 md:w-1/3 min-w-36">
+						<label class="label mb-2">
+							<span>Access Duration:</span>
+							<select
+								class="select variant-form-material {errors.ttl ? 'input-error' : ''}"
+								aria-label="Access Duration"
+								name="ttl"
+								bind:value={form.ttl}
+								on:input={() => (errors.ttl = '')}
+								title="Select the duration after which the link will expire"
+							>
+								<option value="1">1 Hour</option>
+								<option value="12">12 Hours</option>
+								<option value="24">1 Day</option>
+								<option value="168">1 Week</option>
+							</select>
+						</label>
+						{#if errors.ttl}
+							<div
+								class="text-error-500 absolute w-full whitespace-nowrap overflow-hidden overflow-ellipsis"
+							>
+								{errors.ttl}
+							</div>
+						{/if}
+					</div>
+
+					<div class="sm:w-1/2 md:w-1/3 min-w-36">
+						<label class="label mb-2">
+							<span>Access Limit:</span>
+							<select
+								class="select variant-form-material {errors.visitCountThreshold
+									? 'input-error'
+									: ''}"
+								aria-label="Access Limit"
+								name="visitCountThreshold"
+								bind:value={form.visitCountThreshold}
+								on:input={() => (errors.visitCountThreshold = '')}
+								title="Select the number of views after which the link expires"
+							>
+								<option value="0">No Limit</option>
+								<option value="1">1 View</option>
+								<option value="10">10 Views</option>
+								<option value="20">20 Views</option>
+								<option value="50">50 Views</option>
+								<option value="100">100 Views</option>
+							</select>
+						</label>
+						{#if errors.visitCountThreshold}
+							<div
+								class="text-error-500 absolute w-full whitespace-nowrap overflow-hidden overflow-ellipsis"
+							>
+								{errors.ttl}
+							</div>
+						{/if}
+					</div>
+				</div>
+			</div>
+			<div class="flex items-end justify-end">
+				<button class="btn variant-filled-primary h-10 mb-2" type="submit">
+					{isLoading ? 'Creating...' : 'Create'}
+				</button>
+			</div>
+		</form>
+	</section>
 </Card>
