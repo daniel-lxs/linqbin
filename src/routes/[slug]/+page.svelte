@@ -2,12 +2,14 @@
 	import Card from '$lib/components/simple/Card.svelte';
 	import SmallCard from '$lib/components/simple/SmallCard.svelte';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
-	import { popup } from '@skeletonlabs/skeleton';
+	import { Accordion, AccordionItem, popup } from '@skeletonlabs/skeleton';
 	import { Check, Copy, Frown } from 'lucide-svelte';
 	import type { Entry } from '../../types/Entry';
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
+	import NotFoundReasons from '$lib/components/simple/NotFoundReasons.svelte';
+	import CreateLinkButton from '$lib/components/simple/CreateLinkButton.svelte';
 
 	export let data: PageData;
 
@@ -124,7 +126,7 @@
 	<meta name="description" content="Create temporary links with Linqbin" />
 </svelte:head>
 
-<div class="flex items-center justify-center h-full">
+<div class="flex items-center justify-center">
 	{#if data.slug}
 		{#if isLoading}
 			<Card>
@@ -186,7 +188,9 @@
 				<section class="p-4">
 					<div class="card variant-soft p-4 flex items-start">
 						<section class="p-1 min-h-0">
-							{decryptedContent}
+							<p class="whitespace-pre-wrap">
+								{decryptedContent}
+							</p>
 						</section>
 						{#if !shouldRedirect}
 							<aside class="card p-4 variant-filled-primary" data-popup="popupCopied">
@@ -208,6 +212,7 @@
 						{/if}
 					</div>
 				</section>
+				<CreateLinkButton />
 			</Card>
 		{:else}
 			<SmallCard>
@@ -218,12 +223,11 @@
 					</header>
 				</div>
 				<section class="p-4 mt-4">
-					<p class="text-lg text-center">
-						The requested link could not be found, has expired or has an invalid passkey
+					<p class="text-lg text-center mb-4">
+						You are seeing this page for one of the following reasons:
 					</p>
-					<div class="flex items-center justify-center w-full">
-						<a href="/" class="btn variant-filled-primary mt-8">Create new link</a>
-					</div>
+					<NotFoundReasons />
+					<CreateLinkButton />
 				</section>
 			</SmallCard>
 		{/if}
