@@ -4,6 +4,7 @@
 	import { Copy, Check } from 'lucide-svelte';
 	import { popup, type PopupSettings } from '@skeletonlabs/skeleton';
 	import type { Entry } from '../../types/Entry';
+	import CreateLinkButton from '$lib/components/simple/CreateLinkButton.svelte';
 
 	export let entryWithPasskey: Entry & { passkey: string };
 	export let entryUrl: string;
@@ -43,7 +44,7 @@
 	}
 </script>
 
-<div class="card variant-ghost p-6 mb-8 shadow-xl max-w-3xl w-full mx-auto">
+<div class="card variant-ghost p-6 mb-8 shadow-xl max-w-3xl w-full mt-20 mb-20 mx-auto">
 	<header class="card-header mb-2">
 		<h3 class="h3">Your new temporary link is ready!</h3>
 	</header>
@@ -120,12 +121,5 @@
 		</div>
 		<p class="text-sm mt-1">Share this link if you prefer to provide the passkey separately.</p>
 	</section>
-	<div class="flex items-center justify-center">
-		<button
-			class="btn variant-filled-primary h-10 mb-2 mt-4"
-			on:click={() => (window.location.href = '/')}
-		>
-			Create new link
-		</button>
-	</div>
+	<CreateLinkButton />
 </div>
