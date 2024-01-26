@@ -150,7 +150,7 @@
 			isValidUrl = false;
 			entryMode = 'url';
 			cardTitle = 'Create new temporary link';
-			cardDescription = 'Paste your longURL to create a new temporary short link';
+			cardDescription = 'Paste your long URL to create a new temporary short link';
 			rows = 1;
 		} else {
 			isValidUrl = false;
