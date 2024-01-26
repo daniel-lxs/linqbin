@@ -2,7 +2,7 @@
 	import Card from '$lib/components/simple/Card.svelte';
 	import { getToastStore, Tab, TabGroup, type ToastSettings } from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash-es';
-	import { ArrowDownToLine, CheckCircle2, X, XCircle } from 'lucide-svelte';
+	import { ArrowDownToLine, X } from 'lucide-svelte';
 	import * as yup from 'yup';
 	import type { Entry, NewEntryDto } from '../../types/Entry';
 
@@ -57,7 +57,7 @@
 	});
 
 	// Function to fetch data with debounce
-	const fetchData = debounce(async () => {
+	const saveEntry = debounce(async () => {
 		try {
 			const newEntry: NewEntryDto = {
 				title: form.title === '' ? undefined : form.title,
@@ -69,7 +69,7 @@
 			const { createNewEntry } = await import('../../api/createNewEntry');
 			entryWithPasskey = await createNewEntry(newEntry);
 
-			entryUrl = `${window.location.origin.split('//')[1]}/${entryWithPasskey.slug}`;
+			entryUrl = `${window.location.origin}/${entryWithPasskey.slug}`;
 
 			isLoading = false;
 		} catch (error) {
@@ -87,7 +87,7 @@
 		errors = await validateForm(form, formSchema);
 
 		if (Object.keys(errors).length === 0) {
-			fetchData();
+			saveEntry();
 		} else {
 			isLoading = false;
 		}
@@ -171,10 +171,10 @@
 		rounded="rounded"
 		class="border-b-1 border-surface-400-500-token w-full space-x-2 "
 	>
-		<Tab class="w-1/3 mb-2" bind:group={tabSet} name="tab1" value={0} on:change={updateCardHeader}>
+		<Tab class="w-1/4 mb-2" bind:group={tabSet} name="tab1" value={0} on:change={updateCardHeader}>
 			<span class="text-lg">Link</span>
 		</Tab>
-		<Tab class="w-1/3 mb-2" bind:group={tabSet} name="tab2" value={1} on:change={updateCardHeader}>
+		<Tab class="w-1/4 mb-2" bind:group={tabSet} name="tab2" value={1} on:change={updateCardHeader}>
 			<span class="text-lg">Text</span>
 		</Tab>
 	</TabGroup>
