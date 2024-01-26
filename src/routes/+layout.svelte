@@ -52,11 +52,9 @@
 	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 </script>
 
-<!-- App Shell -->
 <Toast />
 <AppShell>
 	<svelte:fragment slot="header">
-		<!-- App Bar -->
 		<AppBar shadow="shadow-2xl">
 			<svelte:fragment slot="lead"
 				><a class="w-auto flex" href="/"

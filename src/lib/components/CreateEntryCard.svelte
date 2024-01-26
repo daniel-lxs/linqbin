@@ -215,7 +215,7 @@
 					<div class="text-error-500">{errors.content}</div>
 				{/if}
 				<div class="mt-6 w-full grid-cols-[1fr_auto] relative">
-					<div class="relative w-1/2">
+					<div class="relative w-full md:w-1/2">
 						<input
 							class="input variant-form-material {errors.title ? 'input-error' : ''}"
 							type="text"
