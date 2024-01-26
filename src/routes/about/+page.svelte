@@ -7,7 +7,7 @@
 	<meta name="description" content="Create temporary links with Linqbin" />
 </svelte:head>
 
-<div class="flex items-center justify-center h-full">
+<div class="flex items-center justify-center">
 	<Card>
 		<header class="card-header">
 			<h2 class="h2">About</h2>
@@ -15,23 +15,33 @@
 
 		<section class="p-4">
 			<div class="mt-4">
-				<h3 class="text-lg font-semibold mb-2">What is Linqbin?</h3>
+				<h3 class="h3 text-xl font-semibold mb-2">What is Linqbin?</h3>
 				<p>
 					<a href="https://github.com/daniel-lxs/linqbin" class="text-blue-500">Linqbin</a> is a project
 					designed to serve as a temporary and encrypted link shortener service.
 				</p>
 
-				<h3 class="text-lg font-semibold mt-4 mb-2">What does it do?</h3>
+				<h3 class="h3 text-xl font-semibold mt-8 mb-2">What does it do?</h3>
 				<p>
-					Linqbin allows you to create links that contain either plain text or URL(s). If only one
-					URL is provided on your entry, Linqbin will automatically redirect to that URL. Every link
-					generated is encrypted and temporary, allowing you to set a specific duration or number of
-					visits after which the link will expire.
+					Linqbin is a tool that allows you to create short links that can redirect to a chosen URL
+					or contain plain text. Every short link generated is encrypted and temporary, allowing you
+					to set a specific duration or number of visits after which the link will expire and can't
+					be accessed again.
 				</p>
 			</div>
 
-			<div class="mt-4">
-				<p class="mb-2">Technologically, the project is built using:</p>
+			<div class="mt-8">
+				<h3 class="h3 text-xl font-semibold mb-2">Disclaimer</h3>
+				<p>
+					Linqbin has no access to your data. Every link created is encrypted and we can't access
+					the contents of the link. <br /> If you want to report a link that contains inappropriate
+					or illegal content, or malware, please contact me by opening an issue on GitHub. <br /> If
+					it's found that the link is indeed unwanted or malicious, immediate actions will be taken.
+				</p>
+			</div>
+
+			<div class="mt-8">
+				<h3 class="h3 mb-2 text-xl font-semibold mb-2">The project is built using:</h3>
 				<ul class="list-disc list-inside">
 					<li>
 						<a href="https://kit.svelte.dev/" class="text-blue-500">SvelteKit</a> for the website
