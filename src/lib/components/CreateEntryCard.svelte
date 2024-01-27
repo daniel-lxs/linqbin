@@ -17,6 +17,7 @@
 	// State variables
 	let isLoading = false;
 	let isLoadingTitle = false;
+	let entryMode = 'url';
 
 	// Form values
 	let form = {
@@ -52,7 +53,11 @@
 			.string()
 			.required('Content is required')
 			.min(3, 'Content is too short')
-			.max(10000, 'Content is too long'),
+			.max(10000, 'Content is too long')
+			.when([], {
+				is: () => entryMode === 'url',
+				then: (schema) => schema.url('Invalid URL')
+			}),
 		visitCountThreshold: yup.number().integer().min(0, 'Invalid visit count threshold')
 	});
 
@@ -140,24 +145,24 @@
 	// Tab set
 	let tabSet = 0;
 
-	// Entry mode
-	let entryMode = 'url';
 	let cardTitle = 'Create new temporary link';
 	let cardDescription = 'Paste your long URL to create a new temporary short link';
 	let rows = 1;
-	function updateCardHeader() {
+	function handleTabClick() {
 		if (tabSet === 0) {
 			isValidUrl = false;
 			entryMode = 'url';
 			cardTitle = 'Create new temporary link';
 			cardDescription = 'Paste your long URL to create a new temporary short link';
 			rows = 1;
+			errors.content = '';
 		} else {
 			isValidUrl = false;
 			entryMode = 'text';
 			cardTitle = 'Create new temporary entry';
 			cardDescription = 'Paste your plain text to create a new temporary entry';
 			rows = 10;
+			errors.content = '';
 		}
 	}
 </script>
@@ -171,10 +176,10 @@
 		rounded="rounded"
 		class="border-b-1 border-surface-400-500-token w-full space-x-2 "
 	>
-		<Tab class="w-1/4 mb-2" bind:group={tabSet} name="tab1" value={0} on:change={updateCardHeader}>
+		<Tab class="w-1/4 mb-2" bind:group={tabSet} name="tab1" value={0} on:change={handleTabClick}>
 			<span class="text-lg">Link</span>
 		</Tab>
-		<Tab class="w-1/4 mb-2" bind:group={tabSet} name="tab2" value={1} on:change={updateCardHeader}>
+		<Tab class="w-1/4 mb-2" bind:group={tabSet} name="tab2" value={1} on:change={handleTabClick}>
 			<span class="text-lg">Text</span>
 		</Tab>
 	</TabGroup>
@@ -187,7 +192,7 @@
 			<div class=" mt-4 mb-4">
 				{#if entryMode === 'url'}
 					<input
-						class="input variant-form-material w-full"
+						class="input variant-form-material w-full {errors.content ? 'input-error' : ''}"
 						type="text"
 						name="content"
 						title="Content"
@@ -217,7 +222,7 @@
 				<div class="mt-6 w-full grid-cols-[1fr_auto] relative">
 					<div class="relative w-full md:w-1/2">
 						<input
-							class="input variant-form-material {errors.title ? 'input-error' : ''}"
+							class="input variant-form-material pl-3 pr-9 {errors.title ? 'input-error' : ''}"
 							type="text"
 							name="title"
 							aria-label="Title"
