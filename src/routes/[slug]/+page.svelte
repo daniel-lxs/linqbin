@@ -8,7 +8,7 @@
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import NotFoundReasons from '$lib/components/simple/NotFoundReasons.svelte';
+	import NotFoundAccordeon from '$lib/components/simple/NotFoundAccordeon.svelte';
 	import CreateLinkButton from '$lib/components/simple/CreateLinkButton.svelte';
 
 	export let data: PageData;
@@ -121,7 +121,7 @@
 	{#if !data.entry}
 		<title>Linqbin</title>
 	{:else}
-		<title>{data.entry.title ? data.entry.title : 'Untitled link'}</title>
+		<title>{data.entry.title ? data.entry.title : 'Untitled entry'}</title>
 	{/if}
 	<meta name="description" content="Create temporary links with Linqbin" />
 </svelte:head>
@@ -226,7 +226,7 @@
 					<p class="text-lg text-center mb-4">
 						You are seeing this page for one of the following reasons:
 					</p>
-					<NotFoundReasons />
+					<NotFoundAccordeon />
 					<CreateLinkButton />
 				</section>
 			</SmallCard>
