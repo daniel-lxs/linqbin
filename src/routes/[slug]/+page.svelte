@@ -83,14 +83,14 @@
 	async function handleUnlock() {
 		const yup = await import('yup');
 		if (yup.string().length(6).required().isValidSync(inputPasskey)) {
-			redirectToDynamicUrl();
+			redirectToUrl();
 		} else {
 			passkeyError = 'Invalid passkey';
 		}
 	}
 
-	function redirectToDynamicUrl() {
-		window.location.href = `/${data.slug}-${inputPasskey}`;
+	function redirectToUrl() {
+		window.location.href = `/${data.slug}+${inputPasskey}`;
 	}
 
 	// Copy click handler
