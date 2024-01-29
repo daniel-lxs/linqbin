@@ -145,21 +145,21 @@
 	// Tab set
 	let tabSet = 0;
 
-	let cardTitle = 'Create new temporary link';
+	let cardTitle = 'Create a new temporary link';
 	let cardDescription = 'Paste your long URL to create a new temporary short link';
 	let rows = 1;
 	function handleTabClick() {
 		if (tabSet === 0) {
 			isValidUrl = false;
 			entryMode = 'url';
-			cardTitle = 'Create new temporary link';
+			cardTitle = 'Create a new temporary link';
 			cardDescription = 'Paste your long URL to create a new temporary short link';
 			rows = 1;
 			errors.content = '';
 		} else {
 			isValidUrl = false;
 			entryMode = 'text';
-			cardTitle = 'Create new temporary entry';
+			cardTitle = 'Create a new temporary entry';
 			cardDescription = 'Paste your plain text to create a new temporary entry';
 			rows = 10;
 			errors.content = '';
@@ -189,7 +189,7 @@
 	</header>
 	<section class="p-4">
 		<form on:submit|preventDefault={handleSubmit}>
-			<div class=" mt-4 mb-4">
+			<div class="mt-4 mb-4">
 				{#if entryMode === 'url'}
 					<input
 						class="input variant-form-material w-full {errors.content ? 'input-error' : ''}"
