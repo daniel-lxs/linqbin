@@ -9,8 +9,7 @@
 		<svelte:fragment slot="summary">The link has expired</svelte:fragment>
 		<svelte:fragment slot="content">
 			<p class="max-w-md">
-				The link has either reach its expiry date or has it has reached the amount of allowed
-				visits.
+        The link is either expired or has reached its maximum allowed visits.
 			</p>
 		</svelte:fragment>
 	</AccordionItem>
@@ -19,7 +18,7 @@
 		<svelte:fragment slot="summary">The link has been deleted</svelte:fragment>
 		<svelte:fragment slot="content">
 			<p class="max-w-md">
-				The link was reported and deleted due to being innapropriate or malicious.
+				The link was reported and subsequently deleted due to its inappropriate or malicious nature.
 			</p>
 		</svelte:fragment>
 	</AccordionItem>
@@ -28,7 +27,7 @@
 		<svelte:fragment slot="summary">You have entered an invalid passkey</svelte:fragment>
 		<svelte:fragment slot="content">
 			<p class="max-w-md">
-				The passkey (what follows the '+' or '#' symbol in the url) provided is invalid.
+				The passkey (found after the '+' or '#' symbol in the URL) provided is invalid.
 			</p>
 		</svelte:fragment>
 	</AccordionItem>
