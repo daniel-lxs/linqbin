@@ -1,10 +1,14 @@
 import { findEntryBySlug } from '../../api/findEntryBySlug';
 import { decryptContent, splitSlug, validateUrl } from '$lib/utilities';
 import { redirect } from '@sveltejs/kit';
-export async function load({ params }) {
+import { PUBLIC_BLOCKED_USER_AGENTS } from '$env/static/public';
+export async function load({ params, request }) {
+	const blockedUAs = PUBLIC_BLOCKED_USER_AGENTS.split(',');
+	const userAgent = request.headers.get('user-agent');
+
 	const slug = params.slug;
 
-	if (!slug) {
+	if (!slug || (userAgent && blockedUAs.findIndex((ua) => userAgent.includes(ua)) > -1)) {
 		return {
 			status: 404,
 			slug: null,
