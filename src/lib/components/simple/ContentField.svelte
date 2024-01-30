@@ -33,6 +33,9 @@
 			bind:value={content}
 			spellcheck="false"
 		/>
+		{#if errors.content}
+			<div class="ml-2 text-error-500">{errors.content}</div>
+		{/if}
 	</label>
 {:else}
 	<label class="label">
@@ -49,8 +52,8 @@
 			title="Content"
 			required
 		></textarea>
+		{#if errors.content}
+			<div class="ml-2 text-error-500">{errors.content}</div>
+		{/if}
 	</label>
-{/if}
-{#if errors.content}
-	<div class="text-error-500">{errors.content}</div>
 {/if}
