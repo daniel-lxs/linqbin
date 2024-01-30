@@ -3,7 +3,7 @@
 	import type { Entry } from '../types/Entry';
 	import CreateEntryCard from '$lib/components/CreateEntryCard.svelte';
 
-	let entryWithPasskey: Entry & { passkey: string };
+	let entryWithPasskey: (Entry & { passkey: string }) | undefined = undefined;
 	let entryUrl = '';
 </script>
 
