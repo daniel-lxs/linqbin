@@ -53,9 +53,9 @@
 			.max(7 * 24, 'The maximum expiration time is 7 days'),
 		content: yup
 			.string()
-			.required('Content is required')
-			.min(3, 'Content is too short')
-			.max(10000, 'Content is too long')
+			.required('This field is required')
+			.min(3, 'Input is too short')
+			.max(10000, 'Input is too long')
 			.when([], {
 				is: () => entryMode === 'url',
 				then: (schema) => schema.url('Invalid URL')
@@ -110,12 +110,12 @@
 			isUrlValid = false;
 			entryMode = 'url';
 			cardTitle = 'Create a new temporary link';
-			errors.content = '';
+			errors = {};
 		} else {
 			isUrlValid = false;
 			entryMode = 'text';
 			cardTitle = 'Create a new temporary paste';
-			errors.content = '';
+			errors = {};
 		}
 	}
 </script>
