@@ -20,19 +20,9 @@
 				title="Title (Optional)"
 				maxlength="100"
 			/>
+			{#if errors.title}
+				<div class="ml-2 text-error-500">{errors.title}</div>
+			{/if}
 		</label>
-		{#if title !== ''}
-			<button
-				type="button"
-				class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-				on:click={() => (title = '')}
-				title="Clear title"
-			>
-				<X />
-			</button>
-		{/if}
 	</div>
-	{#if errors.title}
-		<div class="text-error-500">{errors.title}</div>
-	{/if}
 </div>
