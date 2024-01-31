@@ -231,8 +231,11 @@
 						</div>
 					</div>
 				</div>
-				<div class="flex items-end justify-end">
-					<button class="btn variant-filled-primary h-12 mt-2 mb-2" type="submit">
+				<div class="flex items-center justify-center sm:items-end sm:justify-end">
+					<button
+						class="btn variant-filled-primary h-12 mb-2 mt-4 sm:mt-2 w-full sm:w-auto"
+						type="submit"
+					>
 						{isLoading ? 'Creating...' : 'Create'}
 					</button>
 				</div>
