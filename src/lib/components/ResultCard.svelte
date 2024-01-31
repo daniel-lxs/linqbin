@@ -44,7 +44,7 @@
 	}
 </script>
 
-<div class="card variant-ghost p-6 mb-8 shadow-xl max-w-3xl w-full mt-20 mb-20 mx-auto">
+<div class="card p-6 mb-8 shadow-xl max-w-3xl w-full mt-20 mb-20 mx-auto">
 	<header class="card-header mb-2">
 		<h3 class="h3">Your new temporary link is ready!</h3>
 	</header>
