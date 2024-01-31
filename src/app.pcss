@@ -3,7 +3,15 @@
 @tailwind utilities;
 @tailwind variants;
 
-html,
-body {
-	@apply h-full overflow-hidden;
+
+html, body {
+    @apply h-full;
 }
+
+.dark body {
+  background-color:hsla(220,39%,10%,1) !important;
+  background-image:
+  radial-gradient(at 100% 0%, hsla(313,41%,20%,1) 0px, transparent 50%),
+  radial-gradient(at 0% 0%, hsla(200,67%,28%,0.87) 0px, transparent 50%) !important; 
+}
+
