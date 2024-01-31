@@ -232,7 +232,7 @@
 					</div>
 				</div>
 				<div class="flex items-end justify-end">
-					<button class="btn variant-filled-primary h-12 mb-2" type="submit">
+					<button class="btn variant-filled-primary h-12 mt-2 mb-2" type="submit">
 						{isLoading ? 'Creating...' : 'Create'}
 					</button>
 				</div>
