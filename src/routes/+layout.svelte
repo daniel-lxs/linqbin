@@ -80,7 +80,9 @@
 					</TabAnchor>
 				</TabGroup>
 
-				<LightSwitch class="mx-6" />
+				<div class="pr-4 pl-0 sm:pl-6 sm:border-l border-surface-500">
+					<LightSwitch />
+				</div>
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
