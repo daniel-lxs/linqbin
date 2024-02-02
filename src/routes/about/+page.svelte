@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import Card from '$lib/components/simple/Card.svelte';
 </script>
 
@@ -9,61 +9,81 @@
 
 <div class="flex items-center justify-center">
 	<Card>
-		<header class="card-header">
-			<h2 class="h2">About</h2>
-		</header>
-
 		<section class="p-4">
-			<div class="mt-4">
-				<h3 class="h3 text-xl font-semibold mb-2">What is Linqbin?</h3>
-				<p>
-					<a href="https://github.com/daniel-lxs/linqbin" class="text-blue-500">Linqbin</a> is a project
-					designed to serve as a temporary and encrypted link shortener service.
-				</p>
+			<h3 class="h3 font-semibold mb-2">What is Linqbin?</h3>
+			<p class="mb-8">
+				Linqbin is an ephemeral link shortener and pastebin (yes, another one) service. All your
+				content is encrypted and stays private, only accessible by you and the ones you decide to
+				share the shortlink with. The data is encrypted in the browser, and the passkey is not saved
+				on our servers, so don't lose it!
+			</p>
 
-				<h3 class="h3 text-xl font-semibold mt-8 mb-2">What does it do?</h3>
-				<p>
-					Linqbin is a tool that allows you to create short links that can redirect to a chosen URL
-					or contain plain text. Every short link generated is encrypted and temporary, allowing you
-					to set a specific duration or number of visits after which the link will expire and can't
-					be accessed again.
-				</p>
-			</div>
+			<h3 class="h3 font-semibold mb-2">Limits</h3>
+			<ul class="list-disc list-inside mb-8">
+				<li>The minimum lifespan of a shortlink is 1 hour.</li>
+				<li>The maximum lifespan of a shortlink is 1 week.</li>
+				<li>20000 characters for the link/paste.</li>
+				<li>150 characters for the optional title field.</li>
+			</ul>
 
-			<div class="mt-8">
-				<h3 class="h3 text-xl font-semibold mb-2">Disclaimer</h3>
-				<p>
-					Linqbin has no access to your data. Every link created is encrypted and we can't access
-					the contents of the link. <br /> If you want to report a link that contains inappropriate
-					or illegal content, or malware, please contact me by opening an issue on GitHub. <br /> If
-					it's found that the link is indeed unwanted or malicious, immediate actions will be taken.
-				</p>
-			</div>
+			<h3 class="h3 font-semibold mb-2">Terms of Service</h3>
+			<p class="mb-8">By using our services, you agree to the following terms:</p>
+			<ol class="list-decimal list-inside mb-8">
+				<li class="mb-2">
+					<strong>Content Ownership:</strong> You own the content you create and share using Linqbin.
+				</li>
+				<li class="mb-2">
+					<strong>Privacy:</strong> We respect your privacy. Your data is yours, and we can't access
+					it since the encryption occurs in your browser, and the passkey is not saved on our servers.
+				</li>
+				<li class="mb-2">
+					<strong>Ephemeral Links:</strong> Links generated are temporary, with a maximum lifespan of
+					1 week.
+				</li>
+				<li class="mb-2"><strong>Prohibited Activities:</strong> No spamming, illegal content.</li>
+				<li class="mb-2">
+					<strong>Limitation of Liability:</strong> We're not responsible for any damages or loss related
+					to the use of our services.
+				</li>
+				<li class="mb-2">
+					<strong>Termination:</strong> We reserve the right to remove links/entries for violations of
+					these terms.
+				</li>
+			</ol>
+			<p class="mb-8">By using Linqbin, you agree to these terms.</p>
 
-			<div class="mt-8">
-				<h3 class="h3 mb-2 text-xl font-semibold mb-2">The project is built using:</h3>
-				<ul class="list-disc list-inside">
-					<li>
-						<a href="https://kit.svelte.dev/" class="text-blue-500">SvelteKit</a> for the website
-					</li>
-					<li>
-						<a href="https://bun.sh/" class="text-blue-500">Bun</a> and
-						<a href="https://hono.dev/" class="text-blue-500">Hono</a> for the backend
-					</li>
-					<li>
-						<a href="https://discord.js.org/" class="text-blue-500">Discord.js</a> for the Discord bot
-						functionality
-					</li>
-				</ul>
-				<p class="mt-4">
-					Linqbin is completely open source and free to use. The project is licensed under the <a
-						href="https://github.com/daniel-lxs/linqbin/blob/main/LICENSE.md"
-						class="text-blue-500">MIT</a
-					>
-					license, so it is provided freely and as-is, with no warranty. You can find the source code
-					on <a href="https://github.com/daniel-lxs/linqbin" class="text-blue-500">GitHub</a>.
-				</p>
-			</div>
+			<h3 class="h3 font-semibold mb-2">Reports</h3>
+			<p class="mb-8">
+				If you want to report a link that contains inappropriate or illegal content, or malware,
+				please contact us by opening an issue on <a
+					href="https://github.com/daniel-lxs/linqbin/issues"
+					class="text-blue-500">GitHub</a
+				>. We might take down any link that violates our terms of service in the case that we can
+				see the data saved in the link.
+			</p>
+
+			<h3 class="h3 font-semibold mb-2">The project is built using:</h3>
+			<ul class="list-disc list-inside mb-8">
+				<li>
+					<a href="https://kit.svelte.dev/" class="text-blue-500">SvelteKit</a> for the website.
+				</li>
+				<li>
+					<a href="https://bun.sh/" class="text-blue-500">Bun</a> and
+					<a href="https://hono.dev/" class="text-blue-500">Hono</a> for the backend.
+				</li>
+				<li>
+					<a href="https://discord.js.org/" class="text-blue-500">Discord.js</a> for the Discord bot
+					functionality.
+				</li>
+			</ul>
+			<p>
+				Linqbin is completely open source and free to use. The project is licensed under the <a
+					href="https://github.com/daniel-lxs/linqbin/blob/main/LICENSE.md"
+					class="text-blue-500">MIT</a
+				>
+				license, so it is provided freely and as-is, with no warranty. You can find the source code on
+				<a href="https://github.com/daniel-lxs/linqbin" class="text-blue-500">GitHub</a>.
+			</p>
 		</section>
 	</Card>
 </div>
