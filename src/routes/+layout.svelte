@@ -1,22 +1,27 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { Cylinder } from 'lucide-svelte';
+	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
+	import {
+		AppBar,
+		AppShell,
+		LightSwitch,
+		TabAnchor,
+		TabGroup,
+		Toast,
+		getToastStore,
+		initializeStores,
+		storePopup,
+		setInitialClassState,
+		modeCurrent,
+		type ToastSettings,
+		setModeCurrent
+	} from '@skeletonlabs/skeleton';
+	import { Cylinder, Moon, Sun } from 'lucide-svelte';
+	import { onMount } from 'svelte';
+	import { checkApi } from '../api/checkApi';
 	import '../app.css';
 	import '../app.pcss';
-	import {
-		AppShell,
-		AppBar,
-		TabGroup,
-		TabAnchor,
-		initializeStores,
-		Toast
-	} from '@skeletonlabs/skeleton';
-	import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
-	import { storePopup } from '@skeletonlabs/skeleton';
-	import { checkApi } from '../api/checkApi';
-	import { onMount } from 'svelte';
-	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
-	import { LightSwitch } from '@skeletonlabs/skeleton';
+
 	initializeStores();
 
 	const toastStore = getToastStore();
@@ -44,6 +49,10 @@
 		}
 	}
 
+	function toggleMode() {
+		setModeCurrent(!$modeCurrent);
+	}
+
 	onMount(() => {
 		checkApiStatus();
 
@@ -52,6 +61,8 @@
 
 	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 </script>
+
+<svelte:head>{@html '<script>(' + setInitialClassState.toString() + ')();</script>'}</svelte:head>
 
 <Toast />
 <AppShell>
@@ -70,7 +81,7 @@
 					flex="flex-1 lg:flex-none"
 					rounded=""
 					border=""
-					class="bg-surface-100-800-token w-full"
+					class="bg-surface-100-800-token w-full mr-0 sm:mr-2"
 				>
 					<TabAnchor class="mr-0 sm:mr-6 rounded" href="/" selected={$page.url.pathname === '/'}
 						>New</TabAnchor
@@ -80,8 +91,20 @@
 					</TabAnchor>
 				</TabGroup>
 
-				<div class="pr-4 pl-0 sm:pl-6 sm:border-l border-surface-500">
-					<LightSwitch />
+				<div class="pr-0 pl-0 sm:pl-6 sm:pr-2 sm:border-l border-surface-500">
+					<button
+						class="btn-icon btn-icon-sm rounded-full"
+						type="button"
+						aria-label="Toggle dark mode"
+						title="Toggle dark mode"
+						on:click={toggleMode}
+					>
+						{#if $modeCurrent}
+							<Sun size="22" />
+						{:else}
+							<Moon size="22" />
+						{/if}
+					</button>
 				</div>
 			</svelte:fragment>
 		</AppBar>

@@ -28,7 +28,7 @@
 			name="content"
 			title="Content"
 			aria-label="URL"
-			placeholder="Example: https://example.com/long-url"
+			placeholder="https://example.com/long-url"
 			on:input={handleContentInput}
 			bind:value={content}
 			spellcheck="false"
