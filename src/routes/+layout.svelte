@@ -16,6 +16,7 @@
 	import { checkApi } from '../api/checkApi';
 	import { onMount } from 'svelte';
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+	import { LightSwitch } from '@skeletonlabs/skeleton';
 	initializeStores();
 
 	const toastStore = getToastStore();
@@ -71,13 +72,15 @@
 					border=""
 					class="bg-surface-100-800-token w-full"
 				>
-					<TabAnchor class="mr-6 rounded" href="/" selected={$page.url.pathname === '/'}
+					<TabAnchor class="mr-0 sm:mr-6 rounded" href="/" selected={$page.url.pathname === '/'}
 						>New</TabAnchor
 					>
 					<TabAnchor class="rounded" href="/about" selected={$page.url.pathname === '/about'}>
 						<span>About</span>
 					</TabAnchor>
 				</TabGroup>
+
+				<LightSwitch class="mx-6" />
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
