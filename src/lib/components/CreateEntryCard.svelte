@@ -106,7 +106,6 @@
 
 	let cardTitle = 'Create a new temporary link';
 	function handleTabClick() {
-		console.log(validOnce);
 		if (tabSet === 0) {
 			isUrlValid = false;
 			entryMode = 'url';
