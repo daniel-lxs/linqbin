@@ -121,7 +121,7 @@
 	}
 </script>
 
-<div class="card max-w-6xl w-full mx-auto mt-2 sm:mt-20 mb-20 shadow-xl">
+<div class="card max-w-6xl w-full mx-auto mt-6 sm:mt-20 mb-20 shadow-xl">
 	<TabGroup
 		justify="justify-center"
 		active="variant-ghost-primary"
