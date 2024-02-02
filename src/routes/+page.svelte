@@ -8,7 +8,7 @@
 </script>
 
 <svelte:head>
-	<title>Linqbin</title>
+	<title>New | Linqbin</title>
 	<meta name="description" content="Create temporary links with Linqbin" />
 </svelte:head>
 <div class="flex items-center justify-center">
