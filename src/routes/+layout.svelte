@@ -4,7 +4,6 @@
 	import {
 		AppBar,
 		AppShell,
-		LightSwitch,
 		TabAnchor,
 		TabGroup,
 		Toast,
@@ -14,7 +13,9 @@
 		setInitialClassState,
 		modeCurrent,
 		type ToastSettings,
-		setModeCurrent
+		setModeCurrent,
+		getModeOsPrefers,
+		setModeUserPrefers
 	} from '@skeletonlabs/skeleton';
 	import { Cylinder, Moon, Sun } from 'lucide-svelte';
 	import { onMount } from 'svelte';
@@ -50,13 +51,19 @@
 	}
 
 	function toggleMode() {
-		setModeCurrent(!$modeCurrent);
+		$modeCurrent = !$modeCurrent;
+		setModeUserPrefers($modeCurrent);
+		setModeCurrent($modeCurrent);
 	}
 
 	onMount(() => {
 		checkApiStatus();
 
 		setInterval(checkApiStatus, 5000);
+
+		if (!('modeCurrent' in localStorage)) {
+			setModeCurrent(getModeOsPrefers());
+		}
 	});
 
 	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
