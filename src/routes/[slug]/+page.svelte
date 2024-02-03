@@ -10,6 +10,7 @@
 	import { page } from '$app/stores';
 	import NotFoundAccordeon from '$lib/components/simple/NotFoundAccordeon.svelte';
 	import CreateLinkButton from '$lib/components/simple/CreateLinkButton.svelte';
+	import CopyField from '../../lib/components/simple/CopyField.svelte';
 
 	export let data: PageData;
 
@@ -169,9 +170,7 @@
 					<p class="text-sm text-center mt-4">
 						If you've landed on this page by accident, request the passkey from the link creator.
 					</p>
-					<div class="flex items-center justify-center w-full">
-						<a href="/" class="btn variant-filled-primary mt-8">Create new link</a>
-					</div>
+					<CreateLinkButton />
 				</section>
 			</SmallCard>
 		{:else if data.entry && decryptedContent}
@@ -186,33 +185,9 @@
 				</header>
 
 				<section class="p-4">
-					<div class="card variant-soft p-4 flex items-start">
-						<section class="p-1 min-h-0">
-							<p class="whitespace-pre-wrap">
-								{decryptedContent}
-							</p>
-						</section>
-						{#if !shouldRedirect}
-							<aside class="card p-4 variant-filled-primary" data-popup="popupCopied">
-								<p>Copied!</p>
-								<div class="arrow variant-filled-primary" />
-							</aside>
-							<button
-								type="button"
-								class="btn btn-sm p-1 ml-auto flex-shrink-0"
-								on:click={handleCopyClick}
-								use:popup={popupCopied}
-							>
-								{#if isCopied}
-									<Check size="20" />
-								{:else}
-									<Copy size="20" />
-								{/if}
-							</button>
-						{/if}
-					</div>
+					<CopyField content={decryptedContent} />
+					<CreateLinkButton />
 				</section>
-				<CreateLinkButton />
 			</Card>
 		{:else}
 			<SmallCard>

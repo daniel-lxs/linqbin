@@ -22,12 +22,12 @@
 </script>
 
 <div class="card variant-soft p-4 sm:w-full flex items-start">
-	<section class="p-1 max-w-full" style="word-wrap: break-word;">
-		<p>{content}</p>
+	<section class="p-1 max-w-full whitespace-pre-wrap" style="word-wrap: break-word;">
+		<p class="pr-4 sm:pr-0">{content}</p>
 	</section>
 	<button
 		type="button"
-		class="btn btn-sm ml-auto"
+		class="btn btn-sm ml-auto -ml-6 sm:ml-auto"
 		on:click={handleCopyClick}
 		use:popup={popupCopied}
 	>
