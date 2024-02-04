@@ -9,7 +9,6 @@ README.md
 .eslintrc.cjs
 .graphqlrc
 .editorconfig
-.svelte-kit
 .vscode
 node_modules
 build
