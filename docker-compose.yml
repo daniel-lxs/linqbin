@@ -2,9 +2,7 @@ version: '3'
 services:
   app:
     container_name: linqbin
-    build:
-      context: .
-      dockerfile: ./Dockerfile
+    image: linqbin/linqbin:latest
     env_file:
       - .env
     environment:
