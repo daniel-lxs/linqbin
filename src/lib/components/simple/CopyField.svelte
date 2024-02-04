@@ -21,9 +21,9 @@
 	}
 </script>
 
-<div class="card variant-soft p-4 sm:w-full flex items-start">
+<div class="card variant-soft py-4 px-2 sm:px-4 sm:w-full flex items-start">
 	<section class="p-1 max-w-full whitespace-pre-wrap" style="word-wrap: break-word;">
-		<p class="pr-4 sm:pr-0">{content}</p>
+		<p class="pr-0">{content}</p>
 	</section>
 	<button
 		type="button"
