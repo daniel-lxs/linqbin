@@ -11,25 +11,16 @@
 	import NotFoundAccordeon from '$lib/components/simple/NotFoundAccordeon.svelte';
 	import CreateLinkButton from '$lib/components/simple/CreateLinkButton.svelte';
 	import CopyField from '../../lib/components/simple/CopyField.svelte';
+	import UnlockEntryCard from '../../lib/components/UnlockEntryCard.svelte';
 
 	export let data: PageData;
 
 	// State variables
 	let isLoading = true;
 	let shouldRedirect = false;
-	let isCopied = false;
 	let redirectMessage = 'Redirecting...';
 	let decryptedContent: string | null = null;
 	let passkey: string | null = '';
-	let passkeyError = '';
-	let inputPasskey = '';
-
-	// Popup settings for copy functionality
-	const popupCopied: PopupSettings = {
-		event: 'click',
-		target: 'popupCopied',
-		placement: 'top'
-	};
 
 	// Icon size
 	const iconSize = '2.5rem';
@@ -81,28 +72,6 @@
 		window.location.href = decryptedContent as string;
 	}
 
-	async function handleUnlock() {
-		const yup = await import('yup');
-		if (yup.string().length(6).required().isValidSync(inputPasskey)) {
-			redirectToUrl();
-		} else {
-			passkeyError = 'Invalid passkey';
-		}
-	}
-
-	function redirectToUrl() {
-		window.location.href = `/${data.slug}+${inputPasskey}`;
-	}
-
-	// Copy click handler
-	function handleCopyClick() {
-		isCopied = true;
-		copyToClipboard(decryptedContent as string);
-		setTimeout(() => {
-			isCopied = false;
-		}, 2000);
-	}
-
 	function copyToClipboard(content: string) {
 		navigator.clipboard.writeText(content);
 	}
@@ -122,7 +91,7 @@
 	{#if !data.entry}
 		<title>Linqbin</title>
 	{:else}
-		<title>{data.entry.title ? data.entry.title : 'Untitled entry'}</title>
+		<title>{data.entry.title ? data.entry.title : 'Linqbin'}</title>
 	{/if}
 	<meta name="description" content="Create temporary links with Linqbin" />
 </svelte:head>
@@ -141,38 +110,7 @@
 				</section>
 			</Card>
 		{:else if !passkey}
-			<SmallCard>
-				<div class="flex items-center justify-center w-full">
-					<header class="card-header flex items-center">
-						<h2 class="text-center h2 ml-2">Passkey was not provided</h2>
-					</header>
-				</div>
-				<section class="p-4 mt-4">
-					<form class="flex items-center justify-center" on:submit|preventDefault={handleUnlock}>
-						<input
-							class="input variant-form-material"
-							type="text"
-							name="passkey"
-							id="passkey"
-							spellcheck="false"
-							required
-							bind:value={inputPasskey}
-							on:input={() => (passkeyError = '')}
-							placeholder="To access the link, please enter the provided passkey"
-						/>
-						<button class="btn variant-filled-primary ml-2" type="submit">Unlock</button>
-					</form>
-
-					{#if passkeyError !== ''}
-						<div class="text-error-500">{passkeyError}</div>
-					{/if}
-
-					<p class="text-sm text-center mt-4">
-						If you've landed on this page by accident, request the passkey from the link creator.
-					</p>
-					<CreateLinkButton />
-				</section>
-			</SmallCard>
+			<UnlockEntryCard slug={data.slug} />
 		{:else if data.entry && decryptedContent}
 			<Card>
 				<header class="card-header">
