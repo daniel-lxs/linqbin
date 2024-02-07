@@ -81,8 +81,8 @@
 
 			isLoading = false;
 		} catch (error) {
-			t.message = 'Failed to create new entry, please try again later';
-			toastStore.trigger(t);
+			triggerToast('Failed to create new entry', 'variant-filled-error', 3000);
+
 			isLoading = false;
 		}
 	}, 1000);
@@ -95,10 +95,19 @@
 		errors = await validateForm(form, formSchema);
 
 		if (Object.keys(errors).length === 0) {
+			triggerToast('Creating new link...', 'variant-filled-primary', 2000, true);
 			saveEntry();
 		} else {
 			isLoading = false;
 		}
+	}
+
+	function triggerToast(message: string, background: string, timeout: number, hideDismiss = false) {
+		t.background = background;
+		t.message = message;
+		t.timeout = timeout;
+		t.hideDismiss = hideDismiss;
+		toastStore.trigger(t);
 	}
 
 	// Tab set
