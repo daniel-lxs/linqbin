@@ -8,10 +8,7 @@ export async function load({ params, request }) {
 
 	const slug = params.slug;
 
-	console.log(`User agent: ${userAgent} blocked: ${blockedUAs}`);
-
 	if (!slug || (userAgent && isBlocked(userAgent, blockedUAs))) {
-		console.log(`User agent blocked: ${userAgent}`);
 		return {
 			status: 404,
 			slug: null,
