@@ -47,6 +47,7 @@
 	const formSchema = yup.object().shape({
 		title: yup
 			.string()
+			.strict(true)
 			.transform((value, originalValue) => {
 				return !originalValue || /^\s*$/.test(originalValue) ? undefined : value;
 			})
@@ -54,12 +55,14 @@
 			.max(100, 'Title is too long'),
 		ttl: yup
 			.number()
+			.strict(true)
 			.integer()
 			.required('Select an expiration time')
 			.min(1, 'Select an expiration time')
 			.max(7 * 24, 'The maximum expiration time is 7 days'),
 		content: yup
 			.string()
+			.strict(true)
 			.required('This field is required')
 			.min(3, 'Input is too short')
 			.max(10000, 'Input is too long')
