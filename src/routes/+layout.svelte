@@ -57,8 +57,6 @@
 	}
 
 	onMount(() => {
-		checkApiStatus();
-
 		setInterval(checkApiStatus, 5000);
 
 		if (!('modeCurrent' in localStorage)) {
