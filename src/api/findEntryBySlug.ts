@@ -1,18 +1,16 @@
 import axios from 'axios';
 import type { Entry } from '../types/Entry';
 import { PUBLIC_API_URL } from '$env/static/public';
-import { splitSlug } from '$lib/utilities';
 
-export async function findEntryBySlug(slug: string): Promise<Entry | null> {
+export async function findEntryBySlug(slug: string): Promise<Entry | undefined> {
 	try {
-		const trimmedSlug = splitSlug(slug).slug;
-		const result = await axios.get<Entry>(`${PUBLIC_API_URL}/entry/${trimmedSlug}`);
+		const result = await axios.get<Entry>(`${PUBLIC_API_URL}/entry/${slug}`);
 		if (!result.data) {
-			return null;
+			return undefined;
 		}
 
 		return result.data;
 	} catch (error) {
-		return null;
+		return undefined;
 	}
 }

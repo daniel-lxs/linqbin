@@ -2,48 +2,54 @@ import { findEntryBySlug } from '../../api/findEntryBySlug';
 import { decryptContent, splitSlug, validateUrl } from '$lib/utilities';
 import { redirect } from '@sveltejs/kit';
 import { PUBLIC_BLOCKED_USER_AGENTS } from '$env/static/public';
+
 export async function load({ params, request }) {
-	const blockedUAs = PUBLIC_BLOCKED_USER_AGENTS.split(',');
+	// Splitting and extracting relevant data
+	const slug = params.slug.trim();
 	const userAgent = request.headers.get('user-agent');
 
-	const slug = params.slug;
-
-	if (!slug || (userAgent && isBlocked(userAgent, blockedUAs))) {
+	// Handling invalid slug or blocked user agents
+	if (!slug || (userAgent && isBlocked(userAgent, getBlockedUserAgents()))) {
 		return {
-			status: 404,
-			slug: null,
-			entry: null,
-			passkey: null
+			status: 404
 		};
 	}
 
-	const { passkey, entry } = await getPasskeyAndEntry(slug);
+	// Getting passkey and entry based on slug
 
-	if (entry && passkey) {
-		const decryptedContent = decryptContent(entry.content, passkey);
+	const splitResult = splitSlug(slug);
+	if (!splitResult.slug) return { status: 404 };
+	// Finding entry by slug
+	const entry = await findEntryBySlug(splitResult.slug);
 
+	// Processing the entry
+	if (entry && splitResult.passkey) {
+		const decryptedContent = decryptContent(entry.content, splitResult.passkey);
+
+		// Redirecting if URL is valid
 		if (decryptedContent && (await validateUrl(decryptedContent))) {
 			redirect(302, decryptedContent);
 		}
 
-		return { status: 200, entry, slug, passkey };
+		return { status: 200, entry, slug, passkey: splitResult.passkey };
 	} else {
+		// Handling entry not found or missing passkey
 		return {
 			status: entry ? 200 : 404,
-			slug,
+			slug: splitResult.slug,
 			entry,
-			passkey
+			passkey: splitResult.passkey
 		};
 	}
 }
 
-async function getPasskeyAndEntry(slug: string) {
-	const passkey = splitSlug(slug).passkey;
-	const entry = await findEntryBySlug(slug);
-	return { passkey, entry };
-}
-
 function isBlocked(userAgent: string, blockedUAs: string[]): boolean {
+	// Checking if user agent matches any blocked user agents
 	const regex = new RegExp(blockedUAs.join('|'), 'i');
 	return regex.test(userAgent);
+}
+
+function getBlockedUserAgents(): string[] {
+	// Splitting the environment variable containing blocked user agents
+	return PUBLIC_BLOCKED_USER_AGENTS.split(',');
 }

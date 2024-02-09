@@ -18,12 +18,12 @@
 	let shouldRedirect = false;
 	let redirectMessage = 'Redirecting...';
 	let decryptedContent: string | null = null;
-	let passkey: string | null = '';
+	let passkey: string | undefined = '';
 
 	// Icon size
 	const iconSize = '2.5rem';
 
-	async function processEntry(entry: Entry | null, passkey: string | null) {
+	async function processEntry(entry: Entry | undefined, passkey: string | undefined) {
 		if (!data.slug) {
 			redirectToHomepage();
 			return;
