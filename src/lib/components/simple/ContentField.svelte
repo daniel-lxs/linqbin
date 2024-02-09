@@ -5,7 +5,7 @@
 	export let isUrlValid = false;
 	export let validOnce = false;
 
-	async function handleContentInput() {
+	async function handleContentInput(event: Event) {
 		errors.content = '';
 
 		if (entryMode === 'url') {
@@ -14,13 +14,17 @@
 			if (isUrlValid) {
 				validOnce = true;
 			}
+		} else if (event && event.target) {
+			(event.target as HTMLInputElement).style.height = 'auto';
+			(event.target as HTMLInputElement).style.height =
+				(event.target as HTMLInputElement).scrollHeight + 'px';
 		}
 	}
 </script>
 
 {#if entryMode === 'url'}
 	<label class="label">
-		<span class="text-lg">Paste a long URL</span>
+		<span>Paste a long URL</span>
 		<input
 			class="input w-full h-12 {errors.content ? 'input-error' : ''}"
 			type="url"
@@ -50,7 +54,6 @@
 			on:input={handleContentInput}
 			spellcheck="false"
 			title="Content"
-			required
 		></textarea>
 		{#if errors.content}
 			<div class="ml-2 text-error-500">{errors.content}</div>

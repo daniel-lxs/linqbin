@@ -1,10 +1,15 @@
 <script lang="ts">
-	import Card from '$lib/components/simple/Card.svelte';
-	import { getToastStore, Tab, TabGroup, type ToastSettings } from '@skeletonlabs/skeleton';
+	import {
+		focusTrap,
+		getToastStore,
+		Tab,
+		TabGroup,
+		type ToastSettings
+	} from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash-es';
 	import * as yup from 'yup';
 	import type { Entry, NewEntryDto } from '../../types/Entry';
-	import TitleField from './simple/TitleField.svelte';
+	import InputField from '$lib/components/simple/InputField.svelte';
 	import ContentField from './simple/ContentField.svelte';
 	import { ClipboardPen, Link } from 'lucide-svelte';
 
@@ -17,6 +22,7 @@
 	};
 
 	// State variables
+	let isFocused: boolean = true;
 	let isLoading = false;
 	let entryMode: 'text' | 'url' = 'url';
 	let isUrlValid = false;
@@ -41,6 +47,7 @@
 	const formSchema = yup.object().shape({
 		title: yup
 			.string()
+			.strict(true)
 			.transform((value, originalValue) => {
 				return !originalValue || /^\s*$/.test(originalValue) ? undefined : value;
 			})
@@ -48,12 +55,14 @@
 			.max(100, 'Title is too long'),
 		ttl: yup
 			.number()
+			.strict(true)
 			.integer()
 			.required('Select an expiration time')
 			.min(1, 'Select an expiration time')
 			.max(7 * 24, 'The maximum expiration time is 7 days'),
 		content: yup
 			.string()
+			.strict(true)
 			.required('This field is required')
 			.min(3, 'Input is too short')
 			.max(10000, 'Input is too long')
@@ -81,8 +90,8 @@
 
 			isLoading = false;
 		} catch (error) {
-			t.message = 'Failed to create new entry, please try again later';
-			toastStore.trigger(t);
+			triggerToast('Failed to create new entry', 'variant-filled-error', 3000);
+
 			isLoading = false;
 		}
 	}, 1000);
@@ -95,10 +104,19 @@
 		errors = await validateForm(form, formSchema);
 
 		if (Object.keys(errors).length === 0) {
+			triggerToast('Creating new link...', 'variant-filled-primary', 2000, true);
 			saveEntry();
 		} else {
 			isLoading = false;
 		}
+	}
+
+	function triggerToast(message: string, background: string, timeout: number, hideDismiss = false) {
+		t.background = background;
+		t.message = message;
+		t.timeout = timeout;
+		t.hideDismiss = hideDismiss;
+		toastStore.trigger(t);
 	}
 
 	// Tab set
@@ -159,7 +177,7 @@
 			<h3 class="h3">{cardTitle}</h3>
 		</header>
 		<section class="p-4">
-			<form on:submit|preventDefault={handleSubmit}>
+			<form use:focusTrap={isFocused} on:submit|preventDefault={handleSubmit}>
 				<div class="mt-2 mb-4">
 					<ContentField
 						{errors}
@@ -170,7 +188,12 @@
 					/>
 
 					{#if entryMode === 'text'}
-						<TitleField {errors} bind:title={form.title} />
+						<InputField
+							label="Enter a title"
+							placeholder="Title (optional)"
+							error={errors.title}
+							bind:value={form.title}
+						/>
 					{/if}
 				</div>
 				<div class="flex flex-col sm:flex-row sm:flex-wrap">

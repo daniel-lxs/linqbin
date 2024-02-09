@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { X } from 'lucide-svelte';
-
 	export let errors: Record<string, string> = {};
 	export let title = '';
 </script>
