@@ -1,9 +1,7 @@
 <script lang="ts">
 	import Card from '$lib/components/simple/Card.svelte';
 	import SmallCard from '$lib/components/simple/SmallCard.svelte';
-	import type { PopupSettings } from '@skeletonlabs/skeleton';
-	import { popup } from '@skeletonlabs/skeleton';
-	import { Check, Copy, Frown } from 'lucide-svelte';
+	import { Frown } from 'lucide-svelte';
 	import type { Entry } from '../../types/Entry';
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
@@ -70,10 +68,6 @@
 
 	function redirectToDecryptedContent() {
 		window.location.href = decryptedContent as string;
-	}
-
-	function copyToClipboard(content: string) {
-		navigator.clipboard.writeText(content);
 	}
 
 	function setLoading(value: boolean) {
