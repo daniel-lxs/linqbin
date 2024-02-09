@@ -1,10 +1,15 @@
 <script lang="ts">
-	import Card from '$lib/components/simple/Card.svelte';
-	import { getToastStore, Tab, TabGroup, type ToastSettings } from '@skeletonlabs/skeleton';
+	import {
+		focusTrap,
+		getToastStore,
+		Tab,
+		TabGroup,
+		type ToastSettings
+	} from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash-es';
 	import * as yup from 'yup';
 	import type { Entry, NewEntryDto } from '../../types/Entry';
-	import TitleField from './simple/TitleField.svelte';
+	import InputField from '$lib/components/simple/InputField.svelte';
 	import ContentField from './simple/ContentField.svelte';
 	import { ClipboardPen, Link } from 'lucide-svelte';
 
@@ -17,6 +22,7 @@
 	};
 
 	// State variables
+	let isFocused: boolean = true;
 	let isLoading = false;
 	let entryMode: 'text' | 'url' = 'url';
 	let isUrlValid = false;
@@ -168,7 +174,7 @@
 			<h3 class="h3">{cardTitle}</h3>
 		</header>
 		<section class="p-4">
-			<form on:submit|preventDefault={handleSubmit}>
+			<form use:focusTrap={isFocused} on:submit|preventDefault={handleSubmit}>
 				<div class="mt-2 mb-4">
 					<ContentField
 						{errors}
@@ -179,7 +185,12 @@
 					/>
 
 					{#if entryMode === 'text'}
-						<TitleField {errors} bind:title={form.title} />
+						<InputField
+							label="Enter a title"
+							placeholder="Title (optional)"
+							error={errors.title}
+							bind:value={form.title}
+						/>
 					{/if}
 				</div>
 				<div class="flex flex-col sm:flex-row sm:flex-wrap">
