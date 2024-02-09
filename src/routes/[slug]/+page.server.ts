@@ -8,7 +8,7 @@ export async function load({ params, request }) {
 
 	const slug = params.slug;
 
-	if (!slug || (userAgent && blockedUAs.findIndex((ua) => userAgent.includes(ua)) > -1)) {
+	if (!slug || (userAgent && isBlocked(userAgent, blockedUAs))) {
 		return {
 			status: 404,
 			slug: null,
@@ -41,4 +41,9 @@ async function getPasskeyAndEntry(slug: string) {
 	const passkey = splitSlug(slug).passkey;
 	const entry = await findEntryBySlug(slug);
 	return { passkey, entry };
+}
+
+function isBlocked(userAgent: string, blockedUAs: string[]): boolean {
+	const regex = new RegExp(blockedUAs.join('|'), 'i');
+	return regex.test(userAgent);
 }
