@@ -55,7 +55,6 @@
 			.max(100, 'Title is too long'),
 		ttl: yup
 			.number()
-			.strict(true)
 			.integer()
 			.required('Select an expiration time')
 			.min(1, 'Select an expiration time')
