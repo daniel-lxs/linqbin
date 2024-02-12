@@ -1,7 +1,7 @@
 import axios from 'axios';
+import { charset64, Entropy } from 'entropy-string';
 import type { Entry, NewEntryDto } from '../types/Entry';
-import { getNewPasskey } from './getNewPasskey';
-import { encryptContent } from '$lib/utilities';
+import { encryptContent, hashPasskey } from '$lib/utilities';
 import { PUBLIC_API_URL } from '$env/static/public';
 
 export async function createNewEntry({
@@ -16,20 +16,21 @@ export async function createNewEntry({
 			title = title.trim();
 		}
 
-		const passkey = await getNewPasskey();
+		const passkey = new Entropy({ charset: charset64, bits: 32 }).string();
 
-		if (!passkey) {
-			throw new Error('Failed to create entry');
-		}
+		const hash = await hashPasskey(passkey);
 
 		const encryptedContent = encryptContent(content, passkey);
 
-		const result = await axios.post<Entry>(`${PUBLIC_API_URL}/entry`, {
+		const newEntry: NewEntryDto = {
 			title,
 			content: encryptedContent,
 			visitCountThreshold,
+			protoHash: hash,
 			ttl
-		});
+		};
+
+		const result = await axios.post<Entry>(`${PUBLIC_API_URL}/entry`, newEntry);
 		return { ...result.data, passkey };
 	} catch (error) {
 		console.error(error);

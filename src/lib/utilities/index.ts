@@ -4,3 +4,4 @@ export * from './decryptContent';
 export * from './validateUrl';
 export * from './validateForm';
 export * from './splitSlug';
+export * from './hashPasskey';

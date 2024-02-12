@@ -4,41 +4,44 @@ import { redirect } from '@sveltejs/kit';
 import { PUBLIC_BLOCKED_USER_AGENTS } from '$env/static/public';
 
 export async function load({ params, request }) {
-	// Splitting and extracting relevant data
-	const slug = params.slug.trim();
 	const userAgent = request.headers.get('user-agent');
 
-	// Handling invalid slug or blocked user agents
-	if (!slug || (userAgent && isBlocked(userAgent, getBlockedUserAgents()))) {
+	const paramSlug = params.slug;
+
+	if (!paramSlug || (userAgent && isBlocked(userAgent, getBlockedUserAgents()))) {
 		return {
 			status: 404
 		};
 	}
 
-	// Getting passkey and entry based on slug
+	const { slug, passkey } = splitSlug(paramSlug);
 
-	const splitResult = splitSlug(slug);
-	if (!splitResult.slug) return { status: 404 };
-	// Finding entry by slug
-	const entry = await findEntryBySlug(splitResult.slug);
+	if (!slug || !passkey) {
+		return {
+			status: 404,
+			slug,
+			passkey
+		};
+	}
 
-	// Processing the entry
-	if (entry && splitResult.passkey) {
-		const decryptedContent = decryptContent(entry.content, splitResult.passkey);
+	const entry = await findEntryBySlug(slug, passkey);
+
+	if (entry) {
+		const decryptedContent = decryptContent(entry.content, passkey);
 
 		// Redirecting if URL is valid
 		if (decryptedContent && (await validateUrl(decryptedContent))) {
 			redirect(302, decryptedContent);
 		}
 
-		return { status: 200, entry, slug, passkey: splitResult.passkey };
+		return { status: 200, entry, slug, passkey };
 	} else {
 		// Handling entry not found or missing passkey
 		return {
 			status: entry ? 200 : 404,
-			slug: splitResult.slug,
+			slug: slug,
 			entry,
-			passkey: splitResult.passkey
+			passkey: passkey
 		};
 	}
 }

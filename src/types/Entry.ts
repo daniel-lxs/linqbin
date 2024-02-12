@@ -1,4 +1,6 @@
-export type NewEntryDto = Pick<Entry, 'title' | 'content' | 'ttl' | 'visitCountThreshold'>;
+export type NewEntryDto = Pick<Entry, 'title' | 'content' | 'ttl' | 'visitCountThreshold'> & {
+	protoHash: string;
+};
 
 export type Entry = {
 	id: number;

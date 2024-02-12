@@ -14,41 +14,54 @@
 	export let data: PageData;
 
 	// State variables
+	let entry: Entry | undefined;
 	let isLoading = true;
 	let shouldRedirect = false;
 	let redirectMessage = 'Redirecting...';
-	let decryptedContent: string | null = null;
+	let decryptedContent: string | undefined;
 	let passkey: string | undefined = '';
 
 	// Icon size
 	const iconSize = '2.5rem';
 
-	async function processEntry(entry: Entry | undefined, passkey: string | undefined) {
+	async function processEntry(passkey: string | undefined) {
 		if (!data.slug) {
 			redirectToHomepage();
 			return;
 		}
 
-		if (!entry || !passkey) {
-			setLoading(false);
-			return;
-		}
-
 		try {
-			const { decryptContent } = await import('$lib/utilities');
-			decryptedContent = await decryptContent(entry.content, passkey);
+			if (!entry) {
+				if (passkey) {
+					const { findEntryBySlug } = await import('../../api/findEntryBySlug');
+					const { decryptContent } = await import('$lib/utilities');
 
-			if (!decryptedContent) {
-				setLoading(false);
-				return;
+					entry = await findEntryBySlug(data.slug, passkey);
+
+					if (!entry) {
+						setLoading(false);
+						return;
+					}
+
+					decryptedContent = await decryptContent(entry.content, passkey);
+
+					console.log(decryptedContent);
+
+					if (!decryptedContent) {
+						setLoading(false);
+						return;
+					}
+
+					await handleValidContent();
+					return;
+				} else {
+					setLoading(false);
+					return;
+				}
 			}
-
-			await handleValidContent();
 		} catch (error) {
 			redirectToHomepage();
 			console.error(error);
-		} finally {
-			setLoading(false);
 		}
 	}
 
@@ -60,6 +73,7 @@
 			shouldRedirect = true;
 			redirectToDecryptedContent();
 		}
+		setLoading(false);
 	}
 
 	function redirectToHomepage() {
@@ -75,9 +89,10 @@
 	}
 
 	onMount(async () => {
+		entry = data.entry;
 		passkey = data.passkey;
 		if (!passkey) passkey = $page.url.hash.substring(1);
-		await processEntry(data.entry, passkey);
+		await processEntry(passkey);
 	});
 </script>
 
@@ -105,14 +120,14 @@
 			</Card>
 		{:else if !passkey}
 			<UnlockEntryCard slug={data.slug} />
-		{:else if data.entry && decryptedContent}
+		{:else if entry && decryptedContent}
 			<Card>
 				<header class="card-header">
 					{#if shouldRedirect}
 						<h3 class="h3">{redirectMessage}</h3>
-						<p class="text-lg">{data.entry.title ? data.entry.title : 'Untitled link'}</p>
+						<p class="text-lg">{entry.title ? entry.title : 'Untitled link'}</p>
 					{:else}
-						<h3 class="h3">{data.entry.title ? data.entry.title : 'Untitled link'}</h3>
+						<h3 class="h3">{entry.title ? entry.title : 'Untitled link'}</h3>
 					{/if}
 				</header>
 
