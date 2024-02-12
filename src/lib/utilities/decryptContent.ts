@@ -1,6 +1,6 @@
 import CryptoJS from 'crypto-js';
 
-export function decryptContent(encryptedContent: string, passkey: string): string | null {
+export function decryptContent(encryptedContent: string, passkey: string): string | undefined {
 	try {
 		// Extract the salt and IV from the encrypted content
 		const salt = CryptoJS.enc.Hex.parse(encryptedContent.substr(0, 32));
@@ -29,9 +29,9 @@ export function decryptContent(encryptedContent: string, passkey: string): strin
 		if (decryptedContent !== undefined && decryptedContent !== '') {
 			return decryptedContent;
 		} else {
-			return null;
+			return undefined;
 		}
 	} catch (error) {
-		return null;
+		return undefined;
 	}
 }
