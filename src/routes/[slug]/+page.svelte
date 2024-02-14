@@ -21,9 +21,6 @@
 	let decryptedContent: string | undefined;
 	let passkey: string | undefined = '';
 
-	// Icon size
-	const iconSize = '2.5rem';
-
 	async function processEntry(passkey: string | undefined) {
 		if (!data.slug) {
 			redirectToHomepage();
@@ -31,8 +28,8 @@
 		}
 
 		try {
-			if (!entry) {
-				if (passkey) {
+			if (passkey) {
+				if (!entry) {
 					const { findEntryBySlug } = await import('../../api/findEntryBySlug');
 					const { decryptContent } = await import('$lib/utilities');
 
@@ -45,8 +42,6 @@
 
 					decryptedContent = await decryptContent(entry.content, passkey);
 
-					console.log(decryptedContent);
-
 					if (!decryptedContent) {
 						setLoading(false);
 						return;
@@ -54,10 +49,15 @@
 
 					await handleValidContent();
 					return;
-				} else {
-					setLoading(false);
-					return;
 				}
+				const { decryptContent } = await import('$lib/utilities');
+
+				decryptedContent = await decryptContent(entry.content, passkey);
+				setLoading(false);
+				return;
+			} else {
+				setLoading(false);
+				return;
 			}
 		} catch (error) {
 			redirectToHomepage();
@@ -91,6 +91,7 @@
 	onMount(async () => {
 		entry = data.entry;
 		passkey = data.passkey;
+
 		if (!passkey) passkey = $page.url.hash.substring(1);
 		await processEntry(passkey);
 	});
@@ -140,7 +141,7 @@
 			<SmallCard>
 				<div class="flex items-center justify-center w-full">
 					<header class="card-header flex items-center">
-						<Frown size={iconSize} />
+						<Frown size="2.5rem" />
 						<h2 class="text-center h2 ml-2">Link not found</h2>
 					</header>
 				</div>
