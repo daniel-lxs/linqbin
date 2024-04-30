@@ -74,7 +74,7 @@
 	// Function to fetch data with debounce
 	const saveEntry = debounce(async () => {
 		try {
-			const newEntry: NewEntryDto = {
+			const newEntry: Omit<NewEntryDto, 'protoHash'> = {
 				title: form.title === '' ? undefined : form.title,
 				content: form.content,
 				ttl: Number(form.ttl),

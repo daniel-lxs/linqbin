@@ -9,7 +9,7 @@ export async function createNewEntry({
 	content,
 	ttl,
 	visitCountThreshold
-}: NewEntryDto): Promise<Entry & { passkey: string }> {
+}: Omit<NewEntryDto, 'protoHash'>): Promise<Entry & { passkey: string }> {
 	try {
 		//Sanitize title
 		if (title) {
